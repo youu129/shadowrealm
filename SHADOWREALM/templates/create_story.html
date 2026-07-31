@@ -1,0 +1,16 @@
+<form method="POST" action="{% url 'create_story' %}" class="bg-gray-900 p-6 rounded-lg text-white">
+    {% csrf_token %}
+
+    <label class="block mb-2 font-bold">Story Title</label>
+    {{ form.title }}
+
+    <label class="block my-2 font-bold">Category</label>
+    {{ form.category }}
+
+    <label class="block my-2 font-bold">Content</label>
+    {{ form.content }}
+
+    <button type="submit" class="mt-4 bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
+        Publish Story
+    </button>
+</form>
