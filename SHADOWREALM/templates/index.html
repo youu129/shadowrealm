@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}ShadowRealm | Read Creepypastas & Dark Stories{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<section class="relative bg-gradient-to-b from-black via-realm-card to-realm-dark rounded-2xl border border-realm-border p-8 sm:p-12 mb-10 overflow-hidden text-center sm:text-left">
+    <div class="relative z-10 max-w-2xl">
+        <span class="text-xs font-mono tracking-widest text-red-500 uppercase">Curated Horror Fiction</span>
+        <h1 class="text-3xl sm:text-5xl font-black text-white mt-2 mb-4 tracking-tight">
+            Step Into The <span class="text-red-700 underline decoration-red-900">Shadows</span>.
+        </h1>
+        <p class="text-gray-400 text-sm sm:text-base mb-6 leading-relaxed">
+            A community platform dedicated to original creepypastas, psychological thrillers, and paranormal encounters. Read tales submitted by authors worldwide or publish your own.
+        </p>
+        {% if not user.is_authenticated %}
+            <a href="#" class="inline-block bg-realm-red hover:bg-realm-redHover text-white font-bold text-sm px-6 py-3 rounded-lg border border-red-900 shadow-xl transition-all">
+                Start Writing Today
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Search & Category Filters -->
+<section class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    
+    <!-- Category Tabs -->
+    <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+        <a href="{% url 'home' %}" class="text-xs font-bold px-4 py-2 rounded-full border border-red-900 bg-realm-red text-white whitespace-nowrap">
+            All Stories
+        </a>
+        {% for cat in categories %}
+            <a href="?category={{ cat.slug }}" class="text-xs font-medium px-4 py-2 rounded-full border border-realm-border bg-realm-card text-gray-400 hover:text-white hover:border-gray-700 transition-colors whitespace-nowrap">
+                {{ cat.name }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- Search Form -->
+    <form method="GET" action="{% url 'home' %}" class="w-full md:w-72">
+        <div class="relative">
+            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search by title or author..." 
+                   class="w-full bg-realm-card border border-realm-border text-gray-200 text-xs rounded-lg px-4 py-2.5 focus:outline-none focus:border-red-800 placeholder-gray-600">
+            <button type="submit" class="absolute right-3 top-2.5 text-xs text-gray-500 hover:text-red-500">
+                🔍
+            </button>
+        </div>
+    </form>
+</section>
+
+<!-- Stories Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for story in stories %}
+        <article class="bg-realm-card border border-realm-border rounded-xl p-6 flex flex-col justify-between hover:border-red-950 transition-all duration-300 group shadow-lg">
+            <div>
+                <!-- Category & Date Header -->
+                <div class="flex items-center justify-between mb-3 text-xs">
+                    <span class="text-red-500 font-mono font-semibold uppercase tracking-wider">
+                        {{ story.category.name|default:"Uncategorized" }}
+                    </span>
+                    <span class="text-gray-600 font-mono">
+                        {{ story.created_at|date:"M d, Y" }}
+                    </span>
+                </div>
+
+                <!-- Story Title -->
+                <h2 class="text-xl font-bold text-gray-100 group-hover:text-red-500 transition-colors mb-2 line-clamp-2">
+                    <a href="{% url 'story_detail' story.slug %}">
+                        {{ story.title }}
+                    </a>
+                </h2>
+
+                <!-- Teaser Summary -->
+                <p class="text-gray-400 text-sm mb-4 line-clamp-3 leading-relaxed">
+                    {{ story.summary }}
+                </p>
+            </div>
+
+            <!-- Card Footer: Author & Upvote Form -->
+            <div class="pt-4 border-t border-realm-border flex items-center justify-between">
+                
+                <!-- Author Info -->
+                <span class="text-xs text-gray-500">
+                    By <strong class="text-gray-300 font-normal">@{{ story.author.username }}</strong>
+                </span>
+
+                <!-- Standard HTML Upvote Button Form -->
+                <form method="POST" action="{% url 'upvote_story' story.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="flex items-center space-x-1.5 text-xs font-bold px-3 py-1.5 rounded-md border border-realm-border bg-black text-gray-300 hover:text-red-500 hover:border-red-900 transition-colors">
+                        <span>▲</span>
+                        <span>{{ story.total_upvotes }}</span>
+                    </button>
+                </form>
+            </div>
+        </article>
+    {% empty %}
+        <!-- Empty State -->
+        <div class="col-span-full text-center py-16 bg-realm-card border border-realm-border rounded-xl">
+            <span class="text-4xl block mb-2">👁️</span>
+            <h3 class="text-lg font-bold text-gray-300">No stories found in the realm</h3>
+            <p class="text-gray-500 text-sm mt-1">Be the first storyteller to post in this genre.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

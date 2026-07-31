@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ story.title }} | ShadowRealm{% endblock %}
+
+{% block content %}
+
+<article class="bg-realm-card border border-realm-border rounded-xl p-6">
+
+    <div class="mb-4">
+        <span class="text-red-500 text-xs uppercase">
+            {{ story.category.name|default:"Uncategorized" }}
+        </span>
+
+        <h1 class="text-3xl font-bold text-white mt-2">
+            {{ story.title }}
+        </h1>
+
+        <p class="text-gray-500 text-sm mt-2">
+            By @{{ story.author.username }}
+            · {{ story.created_at|date:"M d, Y" }}
+        </p>
+    </div>
+
+    {% if story.summary %}
+        <p class="text-gray-400 mb-6">
+            {{ story.summary }}
+        </p>
+    {% endif %}
+
+    <div class="text-gray-300 leading-8">
+        {{ story.content|safe }}
+    </div>
+
+    <div class="mt-8 pt-5 border-t border-realm-border">
+
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'upvote_story' story.id %}">
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="bg-gray-800 text-red-500 font-bold px-4 py-2 rounded border border-red-900"
+                >
+                    ▲ Upvote ({{ story.total_upvotes }})
+                </button>
+            </form>
+        {% else %}
+            <p class="text-gray-500 text-sm">
+                Sign in to upvote this story.
+            </p>
+        {% endif %}
+
+    </div>
+
+</article>
+
+{% endblock %}
