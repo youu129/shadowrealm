@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHADOWREALM</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#090909;
+    color:white;
+}
+
+header{
+    background:#000;
+    padding:20px 50px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid crimson;
+}
+
+.logo{
+    font-size:32px;
+    color:red;
+    font-weight:bold;
+    letter-spacing:3px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:25px;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:red;
+}
+
+.hero{
+    height:90vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.8)),
+    url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+}
+
+.hero h1{
+    font-size:70px;
+    color:red;
+    text-shadow:0 0 20px red;
+}
+
+.hero p{
+    margin-top:20px;
+    font-size:22px;
+    color:#ddd;
+}
+
+.hero button{
+    margin-top:35px;
+    padding:15px 40px;
+    font-size:18px;
+    border:none;
+    border-radius:30px;
+    background:red;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.hero button:hover{
+    background:black;
+    border:2px solid red;
+}
+
+.section{
+    padding:70px 40px;
+}
+
+.section h2{
+    text-align:center;
+    color:red;
+    margin-bottom:40px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:#151515;
+    border-radius:15px;
+    padding:25px;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 0 20px red;
+}
+
+.card h3{
+    color:red;
+    margin-bottom:15px;
+}
+
+.card p{
+    color:#ccc;
+    line-height:1.6;
+}
+
+.upload{
+    text-align:center;
+    padding:80px 20px;
+}
+
+.upload button{
+    padding:15px 45px;
+    background:red;
+    border:none;
+    color:white;
+    font-size:20px;
+    border-radius:30px;
+    cursor:pointer;
+}
+
+footer{
+    text-align:center;
+    padding:25px;
+    background:#000;
+    color:#888;
+    border-top:2px solid crimson;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">SHADOWREALM</div>
+
+<nav>
+<a href="#">Home</a>
+<a href="#">Stories</a>
+<a href="#">Trending</a>
+<a href="#">Upload</a>
+<a href="#">
+    <button onclick="document. location='file:///C:/Users/Tejita%20Thorat/OneDrive/Desktop/java%20ptr/VS/shadowrealm/SHADOW/login.html'">Login</button></a>
+</nav>
+
+</header>
+
+<section class="hero">
+
+<div>
+
+<h1>Enter The ShadowRealm</h1>
+
+<p>
+Read terrifying stories from people around the world.<br>
+Upload your own horror experiences and let everyone discover them.
+</p>
+
+<button>Start Reading</button>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<h2>Trending Horror Stories</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>The Midnight Call</h3>
+<p>
+At exactly 3:00 AM my phone rang from my own number...
+</p>
+</div>
+
+<div class="card">
+<h3>The Empty Hospital</h3>
+<p>
+The CCTV showed someone walking through the hallway...
+but nobody was there.
+</p>
+</div>
+
+<div class="card">
+<h3>Room 306</h3>
+<p>
+The hotel warned me never to open Room 306...
+I didn't listen.
+</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="upload">
+
+<h2>Share Your Horror Story</h2>
+
+<br>
+
+<p>Upload your scary experiences and let millions read them.</p>
+
+<br><br>
+
+<button>Upload Story</button>
+
+</section>
+
+<footer>
+
+© 2026 SHADOWREALM | Horror Social Media Platform
+
+</footer>
+
+</body>
+</html>
