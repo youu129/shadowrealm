@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHADOWREALM | Upload Story</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#0b0b0b;
+    color:white;
+}
+
+header{
+    background:#111;
+    padding:20px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid crimson;
+}
+
+.logo{
+    color:crimson;
+    font-size:30px;
+    font-weight:bold;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+nav a:hover{
+    color:crimson;
+}
+
+.container{
+    max-width:700px;
+    margin:50px auto;
+    background:#181818;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(255,0,0,.25);
+}
+
+h1{
+    color:crimson;
+    text-align:center;
+    margin-bottom:25px;
+}
+
+label{
+    display:block;
+    margin:15px 0 8px;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#222;
+    color:white;
+    font-size:15px;
+}
+
+textarea{
+    height:220px;
+    resize:vertical;
+}
+
+input[type=file]{
+    padding:10px;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    background:crimson;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#ff3030;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    margin-top:40px;
+    color:#888;
+    border-top:1px solid #333;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<div class="logo">SHADOWREALM</div>
+
+<nav>
+<a href="home.html">Home</a>
+<a href="stories.html">Stories</a>
+<a href="trending.html">Trending</a>
+<a href="upload.html">Upload</a>
+</nav>
+</header>
+
+<div class="container">
+
+<h1>Upload Your Horror Story</h1>
+
+<form>
+
+<label>Story Title</label>
+<input type="text" placeholder="Enter story title" required>
+
+<label>Category</label>
+<select required>
+<option>Ghost</option>
+<option>Haunted House</option>
+<option>Paranormal</option>
+<option>Urban Legend</option>
+<option>Psychological Horror</option>
+<option>True Horror Experience</option>
+</select>
+
+<label>Your Story</label>
+<textarea placeholder="Write your horror story here..." required></textarea>
+
+<label>Upload Cover Image</label>
+<input type="file" accept="image/*">
+
+<label>Your Name</label>
+<input type="text" placeholder="Author name">
+
+<button type="submit">📤 Publish Story</button>
+
+</form>
+
+</div>
+
+<footer>
+© 2026 SHADOWREALM | Share Your Darkest Stories
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHADOWREALM | Trending</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#0b0b0b;
+    color:white;
+}
+
+header{
+    background:#111;
+    padding:20px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid crimson;
+}
+
+.logo{
+    color:crimson;
+    font-size:30px;
+    font-weight:bold;
+    letter-spacing:2px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+nav a:hover{
+    color:crimson;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:40px auto;
+}
+
+.title{
+    text-align:center;
+    color:crimson;
+    font-size:40px;
+    margin-bottom:40px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:#181818;
+    border-radius:15px;
+    overflow:hidden;
+    transition:.3s;
+    border:1px solid #333;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 0 20px crimson;
+}
+
+.card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.content{
+    padding:20px;
+}
+
+.content h2{
+    color:crimson;
+    margin-bottom:10px;
+}
+
+.content p{
+    color:#ccc;
+    line-height:1.6;
+}
+
+.stats{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
+    color:#999;
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:12px;
+    background:crimson;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#ff3030;
+}
+
+footer{
+    text-align:center;
+    padding:25px;
+    color:#888;
+    margin-top:40px;
+    border-top:1px solid #333;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">SHADOWREALM</div>
+
+<nav>
+<a href="home.html">Home</a>
+<a href="stories.html">Stories</a>
+<a href="trending.html">Trending</a>
+<a href="login.html">Logout</a>
+</nav>
+
+</header>
+
+<div class="container">
+
+<h1 class="title">🔥 Trending Horror Stories</h1>
+
+<div class="grid">
+
+<div class="card">
+<img src="https://picsum.photos/500/300?random=1">
+<div class="content">
+<h2>The Whispering Forest</h2>
+<p>Thousands claim they hear voices calling their names from deep inside the forest after midnight.</p>
+<div class="stats">
+<span>❤️ 12.5K</span>
+<span>💬 1.4K</span>
+<span>👁️ 89K</span>
+</div>
+<button>Read Story</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/500/300?random=2">
+<div class="content">
+<h2>Room 306</h2>
+<p>A hotel room that officially doesn't exist—but guests continue to check into it.</p>
+<div class="stats">
+<span>❤️ 10.2K</span>
+<span>💬 980</span>
+<span>👁️ 74K</span>
+</div>
+<button>Read Story</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/500/300?random=3">
+<div class="content">
+<h2>The Last Phone Call</h2>
+<p>A man received a call from his own phone after it had been buried with him.</p>
+<div class="stats">
+<span>❤️ 15.8K</span>
+<span>💬 2.1K</span>
+<span>👁️ 120K</span>
+</div>
+<button>Read Story</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/500/300?random=4">
+<div class="content">
+<h2>The Mirror Smile</h2>
+<p>Her reflection smiled back even after she stopped smiling.</p>
+<div class="stats">
+<span>❤️ 9.7K</span>
+<span>💬 650</span>
+<span>👁️ 61K</span>
+</div>
+<button>Read Story</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/500/300?random=5">
+<div class="content">
+<h2>The Haunted Train</h2>
+<p>The final train of the night always arrives with passengers who disappeared years ago.</p>
+<div class="stats">
+<span>❤️ 18.1K</span>
+<span>💬 2.8K</span>
+<span>👁️ 156K</span>
+</div>
+<button>Read Story</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/500/300?random=6">
+<div class="content">
+<h2>The Basement Door</h2>
+<p>Every time the locked basement door opens, one family member disappears forever.</p>
+<div class="stats">
+<span>❤️ 11.3K</span>
+<span>💬 1.1K</span>
+<span>👁️ 82K</span>
+</div>
+<button>Read Story</button>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 SHADOWREALM | Trending Horror Stories
+</footer>
+
+</body>
+</html>

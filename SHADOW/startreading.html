@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHADOWREALM | Start Reading</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#0d0d0d;
+    color:white;
+}
+
+header{
+    background:#111;
+    padding:20px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid crimson;
+}
+
+.logo{
+    font-size:30px;
+    color:crimson;
+    font-weight:bold;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+nav a:hover{
+    color:crimson;
+}
+
+.hero{
+    text-align:center;
+    padding:70px 20px;
+}
+
+.hero h1{
+    font-size:50px;
+    color:crimson;
+}
+
+.hero p{
+    margin-top:20px;
+    color:#bbb;
+    font-size:18px;
+}
+
+.grid{
+    width:90%;
+    max-width:1200px;
+    margin:40px auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:#181818;
+    border-radius:15px;
+    overflow:hidden;
+    transition:.3s;
+    border:1px solid #333;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 0 20px crimson;
+}
+
+.card img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+}
+
+.content{
+    padding:20px;
+}
+
+.content h2{
+    color:crimson;
+    margin-bottom:10px;
+}
+
+.content p{
+    color:#ccc;
+    line-height:1.6;
+}
+
+.read{
+    display:block;
+    text-align:center;
+    margin:20px;
+    padding:12px;
+    background:crimson;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+}
+
+.read:hover{
+    background:#ff2d2d;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    color:#888;
+    border-top:1px solid #333;
+    margin-top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">SHADOWREALM</div>
+
+<nav>
+<a href="home.html">Home</a>
+<a href="stories.html">Stories</a>
+<a href="trending.html">Trending</a>
+<a href="upload.html">Upload</a>
+</nav>
+</header>
+
+<section class="hero">
+<h1>📖 Start Reading</h1>
+<p>Discover terrifying stories shared by people around the world.</p>
+</section>
+
+<div class="grid">
+
+<div class="card">
+<img src="https://picsum.photos/400/250?random=1">
+<div class="content">
+<h2>The Midnight Knock</h2>
+<p>Every night someone knocks three times at my door... but nobody is outside.</p>
+</div>
+<a href="stories.html" class="read">Read Now</a>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/400/250?random=2">
+<div class="content">
+<h2>Room 306</h2>
+<p>A hotel room that officially doesn't exist, but guests still enter it.</p>
+</div>
+<a href="stories.html" class="read">Read Now</a>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/400/250?random=3">
+<div class="content">
+<h2>The Mirror</h2>
+<p>My reflection smiled at me even after I stopped smiling.</p>
+</div>
+<a href="stories.html" class="read">Read Now</a>
+</div>
+
+</div>
+
+<footer>
+© 2026 SHADOWREALM | Face your fears.
+</footer>
+
+</body>
+</html>
