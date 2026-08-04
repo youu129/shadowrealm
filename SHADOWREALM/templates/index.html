@@ -3,8 +3,101 @@
 {% block title %}ShadowRealm | Read Creepypastas & Dark Stories{% endblock %}
 
 {% block content %}
-<!-- Hero Banner -->
-<section class="relative bg-gradient-to-b from-black via-realm-card to-realm-dark rounded-2xl border border-realm-border p-8 sm:p-12 mb-10 overflow-hidden text-center sm:text-left">
+<style>
+
+.home-realm {
+    position: relative;
+    min-height: calc(100vh - 64px);
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 35%,
+            rgba(70, 10, 20, 0.55) 0%,
+            rgba(8, 10, 20, 0.92) 55%,
+            rgba(5, 7, 10, 1) 100%
+        );
+}
+
+/* Illuminati triangle stays BEHIND everything */
+.home-triangle {
+    position: absolute;
+
+    width: min(850px, 75vw);
+    height: min(850px, 75vw);
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    color: #ff2a3a;
+
+    opacity: 0.22;
+
+    pointer-events: none;
+
+    filter:
+        blur(1px)
+        drop-shadow(0 0 25px rgba(255,42,58,0.45));
+
+    z-index: 0;
+}
+
+.home-triangle svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Everything on home page stays above triangle */
+.home-realm > section,
+.home-realm > div:not(.home-triangle) {
+    position: relative;
+    z-index: 2;
+}
+
+.glass-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.10),
+            rgba(255,255,255,0.025) 45%,
+            rgba(255,255,255,0.06)
+        );
+
+    backdrop-filter: blur(18px) saturate(125%);
+    -webkit-backdrop-filter: blur(18px) saturate(125%);
+
+    border: 1px solid rgba(255,255,255,0.13);
+
+    box-shadow:
+        0 24px 80px -20px rgba(0,0,0,0.8),
+        inset 0 1px rgba(255,255,255,0.05);
+
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        background .3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(255,42,58,0.3);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.13),
+            rgba(255,255,255,0.035) 45%,
+            rgba(255,255,255,0.08)
+        );
+}
+</style>
+
+<div id="home-realm" class="home-realm">
+
+<section class="glass-card relative rounded-2xl p-8 sm:p-12 mb-10 overflow-hidden text-center sm:text-left">
     <div class="relative z-10 max-w-2xl">
         <span class="text-xs font-mono tracking-widest text-red-500 uppercase">Curated Horror Fiction</span>
         <h1 class="text-3xl sm:text-5xl font-black text-white mt-2 mb-4 tracking-tight">
@@ -14,7 +107,7 @@
             A community platform dedicated to original creepypastas, psychological thrillers, and paranormal encounters. Read tales submitted by authors worldwide or publish your own.
         </p>
         {% if not user.is_authenticated %}
-            <a href="#" class="inline-block bg-realm-red hover:bg-realm-redHover text-white font-bold text-sm px-6 py-3 rounded-lg border border-red-900 shadow-xl transition-all">
+            <a href="{% url 'login' %}" class="inline-block bg-realm-red hover:bg-realm-redHover text-white font-bold text-sm px-6 py-3 rounded-lg border border-red-900 shadow-xl transition-all">
                 Start Writing Today
             </a>
         {% endif %}
@@ -30,7 +123,13 @@
             All Stories
         </a>
         {% for cat in categories %}
-            <a href="?category={{ cat.slug }}" class="text-xs font-medium px-4 py-2 rounded-full border border-realm-border bg-realm-card text-gray-400 hover:text-white hover:border-gray-700 transition-colors whitespace-nowrap">
+            <a href="?category={{ cat.slug }}"
+            class="text-xs font-medium px-4 py-2 rounded-full
+                    border border-white/10
+                    bg-white/5 backdrop-blur-md
+                    text-gray-400
+                    hover:text-white hover:border-red-900
+                    transition-colors whitespace-nowrap">
                 {{ cat.name }}
             </a>
         {% endfor %}
@@ -39,68 +138,227 @@
     <!-- Search Form -->
     <form method="GET" action="{% url 'home' %}" class="w-full md:w-72">
         <div class="relative">
-            <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search by title or author..." 
-                   class="w-full bg-realm-card border border-realm-border text-gray-200 text-xs rounded-lg px-4 py-2.5 focus:outline-none focus:border-red-800 placeholder-gray-600">
+           <input type="text"
+            name="q"
+            value="{{ request.GET.q }}"
+            placeholder="Search by title or author..."
+            class="w-full
+                    bg-white/5 backdrop-blur-md
+                    border border-white/10
+                    text-gray-200 text-xs
+                    rounded-lg px-4 py-2.5
+                    focus:outline-none
+                    focus:border-red-800
+                    placeholder-gray-600">
             <button type="submit" class="absolute right-3 top-2.5 text-xs text-gray-500 hover:text-red-500">
                 🔍
             </button>
         </div>
     </form>
 </section>
-
 <!-- Stories Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
     {% for story in stories %}
-        <article class="bg-realm-card border border-realm-border rounded-xl p-6 flex flex-col justify-between hover:border-red-950 transition-all duration-300 group shadow-lg">
+    <a href="{% url 'story_detail' story.slug %}">
+
+        <article class="glass-card rounded-xl p-6 flex flex-col justify-between group">
+
+            <!-- Category + Date -->
             <div>
-                <!-- Category & Date Header -->
-                <div class="flex items-center justify-between mb-3 text-xs">
-                    <span class="text-red-500 font-mono font-semibold uppercase tracking-wider">
+
+                <div class="flex items-center justify-between mb-3">
+
+                    <span class="text-red-500 text-xs font-mono font-semibold uppercase tracking-wider">
                         {{ story.category.name|default:"Uncategorized" }}
                     </span>
-                    <span class="text-gray-600 font-mono">
+
+                    <span class="text-gray-500 text-xs font-mono">
                         {{ story.created_at|date:"M d, Y" }}
                     </span>
+
                 </div>
 
+
                 <!-- Story Title -->
-                <h2 class="text-xl font-bold text-gray-100 group-hover:text-red-500 transition-colors mb-2 line-clamp-2">
-                    <a href="{% url 'story_detail' story.slug %}">
+                <h2 class="text-xl font-bold text-gray-100
+                           group-hover:text-red-500
+                           transition-colors mb-2">
+
                         {{ story.title }}
-                    </a>
+
                 </h2>
 
-                <!-- Teaser Summary -->
-                <p class="text-gray-400 text-sm mb-4 line-clamp-3 leading-relaxed">
-                    {{ story.summary }}
-                </p>
+
+                <!-- Summary -->
+                {% if story.summary %}
+
+                    <p class="text-gray-400 text-sm leading-relaxed mb-5">
+                        {{ story.summary|truncatewords:30 }}
+                    </p>
+
+                {% endif %}
+
             </div>
 
-            <!-- Card Footer: Author & Upvote Form -->
-            <div class="pt-4 border-t border-realm-border flex items-center justify-between">
-                
-                <!-- Author Info -->
-                <span class="text-xs text-gray-500">
-                    By <strong class="text-gray-300 font-normal">@{{ story.author.username }}</strong>
-                </span>
 
-                <!-- Standard HTML Upvote Button Form -->
-                <form method="POST" action="{% url 'upvote_story' story.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="flex items-center space-x-1.5 text-xs font-bold px-3 py-1.5 rounded-md border border-realm-border bg-black text-gray-300 hover:text-red-500 hover:border-red-900 transition-colors">
-                        <span>▲</span>
-                        <span>{{ story.total_upvotes }}</span>
-                    </button>
-                </form>
+            <!-- Bottom -->
+            <div class="border-t border-white/10 pt-4 mt-4
+                        flex items-center justify-between">
+
+                <!-- Author -->
+                <div>
+
+                    <span class="text-xs text-gray-500">
+                        By
+                    </span>
+
+                    <span class="text-xs text-gray-300 font-semibold">
+                        @{{ story.author.username }}
+                    </span>
+
+                </div>
+
+
+                <!-- Upvotes -->
+                <div class="text-xs text-gray-400">
+
+                    ▲ {{ story.total_upvotes }}
+
+                </div>
+
             </div>
+
         </article>
+    </a>
+
     {% empty %}
-        <!-- Empty State -->
-        <div class="col-span-full text-center py-16 bg-realm-card border border-realm-border rounded-xl">
-            <span class="text-4xl block mb-2">👁️</span>
-            <h3 class="text-lg font-bold text-gray-300">No stories found in the realm</h3>
-            <p class="text-gray-500 text-sm mt-1">Be the first storyteller to post in this genre.</p>
+
+        <div class="col-span-full text-center py-16 glass-card rounded-xl">
+
+            <span class="text-4xl block mb-2">
+                👁️
+            </span>
+
+            <h3 class="text-lg font-bold text-gray-300">
+                No stories found in the realm
+            </h3>
+
+            <p class="text-gray-500 text-sm mt-1">
+                Be the first storyteller to post in this genre.
+            </p>
+
         </div>
+
     {% endfor %}
+
 </div>
+
+<!-- CLOSE HOME-REALM -->
+</div>
+
+{% endblock %}
+
+<!-- YOUR EXISTING CRACK EFFECT SCRIPT  -->
+{% block extra_js %}
+
+<script>
+
+const homeRealm = document.getElementById('home-realm');
+const triangle = document.querySelector('.home-triangle');
+
+function quake() {
+
+    if (!homeRealm) return;
+
+    homeRealm.classList.add('page-quake');
+
+    if (triangle) {
+        triangle.classList.add('triangle-home-quake');
+    }
+
+    setTimeout(() => {
+
+        homeRealm.classList.remove('page-quake');
+
+        if (triangle) {
+            triangle.classList.remove('triangle-home-quake');
+        }
+
+    }, 800);
+}
+
+setInterval(quake, 8000);
+
+</script>
+
+<style>
+
+.triangle-home-quake {
+    animation:
+        triangle-home-quake 0.8s
+        cubic-bezier(.25, .46, .45, .94)
+        both;
+}
+
+@keyframes triangle-home-quake {
+
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    15% {
+        transform:
+            translate(-50%, -50%)
+            translateX(-8px)
+            translateY(4px)
+            rotate(-1deg)
+            scale(1.02);
+    }
+
+    30% {
+        transform:
+            translate(-50%, -50%)
+            translateX(9px)
+            translateY(-5px)
+            rotate(1.2deg)
+            scale(1.03);
+    }
+
+    45% {
+        transform:
+            translate(-50%, -50%)
+            translateX(-7px)
+            translateY(-4px)
+            rotate(-0.9deg)
+            scale(1.02);
+    }
+
+    60% {
+        transform:
+            translate(-50%, -50%)
+            translateX(6px)
+            translateY(4px)
+            rotate(0.7deg)
+            scale(1.015);
+    }
+
+    75% {
+        transform:
+            translate(-50%, -50%)
+            translateX(-3px)
+            translateY(2px)
+            rotate(-0.4deg);
+    }
+
+    90% {
+        transform:
+            translate(-50%, -50%)
+            translateX(1px)
+            translateY(-1px);
+    }
+
+}
+</style>
+
 {% endblock %}

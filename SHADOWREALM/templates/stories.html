@@ -1,0 +1,27 @@
+{% for story in stories %}
+
+    <h2>
+        {{ story.title }}
+    </h2>
+
+    <p>
+        By {{ story.author.username }}
+    </p>
+
+    <p>
+        {{ story.created_at|date:"M d, Y H:i" }}
+    </p>
+
+    <p>
+        {{ story.summary }}
+    </p>
+
+    <span>
+        ❤️ {{ story.upvotes.count }}
+    </span>
+
+{% empty %}
+
+    <p>No stories have been published yet.</p>
+
+{% endfor %}

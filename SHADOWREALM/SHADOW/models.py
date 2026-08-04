@@ -36,6 +36,8 @@ class Story(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     upvotes = models.ManyToManyField(User, related_name='upvoted_stories', blank=True)
+     # NEW
+    favorites = models.ManyToManyField(User,related_name='favorite_stories',blank=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -47,6 +49,9 @@ class Story(models.Model):
 
     def total_upvotes(self):
         return self.upvotes.count()
+
+    def total_favorites(self):
+        return self.favorites.count()
 
     def __str__(self):
         return self.title
