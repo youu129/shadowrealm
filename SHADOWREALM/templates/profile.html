@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    @{{ user.username }} | ShadowRealm
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto">
+
+    <!-- PROFILE HEADER -->
+
+    <div class="glass-panel p-8 mb-8">
+
+        <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+
+            <div class="w-20 h-20 rounded-full bg-red-950 border border-red-800 flex items-center justify-center">
+                <span class="text-3xl">
+                    👤
+                </span>
+            </div>
+
+            <div>
+
+                <h1 class="text-3xl font-bold text-white">
+                    @{{ user.username }}
+                </h1>
+
+                <p class="text-gray-500 mt-1">
+                    {{ user.email }}
+                </p>
+
+                <p class="text-gray-600 text-sm mt-2">
+                    Member since {{ user.date_joined|date:"M Y" }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+   <!-- MY STORIES -->
+
+<section class="mb-10">
+
+    <div class="flex items-center justify-between mb-5">
+
+        <h2 class="text-2xl font-bold text-white">
+            🕯️ My Stories
+        </h2>
+
+        <a
+            href="{% url 'create_story' %}"
+            class="bg-red-800 hover:bg-red-700
+                   text-white px-4 py-2
+                   rounded-lg text-sm"
+        >
+            + Write Story
+        </a>
+
+    </div>
+
+
+    {% if my_stories %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            {% for story in my_stories %}
+
+                <div class="glass-panel p-5">
+
+                    <!-- STORY LINK -->
+
+                    <a
+                        href="{% url 'story_detail' story.slug %}"
+                        class="block hover:text-red-500"
+                    >
+
+                        <span class="text-red-500 text-xs uppercase">
+                            {{ story.category.name|default:"Uncategorized" }}
+                        </span>
+
+
+                        <h3 class="text-xl font-bold text-white mt-2">
+                            {{ story.title }}
+                        </h3>
+
+
+                        <p class="text-gray-500 text-sm mt-2">
+                            {{ story.created_at|date:"M d, Y" }}
+                        </p>
+
+
+                        <div class="mt-4 flex gap-4 text-sm text-gray-500">
+
+                            <span>
+                                ▲ {{ story.total_upvotes }}
+                            </span>
+
+                            <span>
+                                ⭐ {{ story.total_favorites }}
+                            </span>
+
+                            <span>
+                                💬 {{ story.comments.count }}
+                            </span>
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="mt-5 flex flex-wrap gap-2">
+
+                        <a
+                            href="{% url 'story_detail' story.slug %}"
+                            class="px-4 py-2 rounded-lg
+                                   bg-white/5
+                                   border border-white/10
+                                   text-gray-300
+                                   hover:bg-white/10
+                                   text-sm
+                                   transition"
+                        >
+                            👁 View
+                        </a>
+
+
+                        <a
+                            href="{% url 'edit_story' story.id %}"
+                            class="px-4 py-2 rounded-lg
+                                   bg-white/5
+                                   border border-white/10
+                                   text-gray-300
+                                   hover:text-red-400
+                                   hover:bg-white/10
+                                   text-sm
+                                   transition"
+                        >
+                            ✏️ Edit
+                        </a>
+
+
+                        <a
+                            href="{% url 'manage_scenes' story.id %}"
+                            class="px-4 py-2 rounded-lg
+                                   bg-red-900/30
+                                   border border-red-800/50
+                                   text-red-400
+                                   hover:bg-red-900/50
+                                   text-sm
+                                   transition"
+                        >
+                            🎬 Scenes
+                        </a>
+
+
+                        <a
+                            href="{% url 'delete_story' story.id %}"
+                            class="px-4 py-2 rounded-lg
+                                   bg-red-950/30
+                                   border border-red-900/50
+                                   text-red-500
+                                   hover:bg-red-950/60
+                                   text-sm
+                                   transition"
+                        >
+                            🗑 Delete
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="glass-panel p-8 text-center">
+
+            <p class="text-gray-500">
+                You haven't written any stories yet.
+            </p>
+
+            <a
+                href="{% url 'create_story' %}"
+                class="inline-block mt-4 text-red-500
+                       hover:text-red-400"
+            >
+                Write your first story →
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+    <!-- FAVORITES -->
+
+    <section>
+
+        <h2 class="text-2xl font-bold text-white mb-5">
+            ⭐ Read Later
+        </h2>
+
+
+        {% if favorite_stories %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                {% for story in favorite_stories %}
+                <a href="{% url 'story_detail' story.slug %}"
+                                class="hover:text-red-500">
+                    <div class="glass-panel p-5">
+
+                        <span class="text-red-500 text-xs uppercase">
+                            {{ story.category.name|default:"Uncategorized" }}
+                        </span>
+
+                        <h3 class="text-xl font-bold text-white mt-2">
+
+                            
+                                {{ story.title }}
+                            
+
+                        </h3>
+
+                        <p class="text-gray-400 text-sm mt-2">
+                            {{ story.summary }}
+                        </p>
+
+                        <p class="text-gray-600 text-sm mt-3">
+                            By @{{ story.author.username }}
+                        </p>
+
+                    </div>
+                
+                </a>
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="glass-panel p-8 text-center">
+
+                <p class="text-gray-500">
+                    Your reading list is empty.
+                </p>
+
+                <p class="text-gray-600 text-sm mt-2">
+                    Save stories you want to read later.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

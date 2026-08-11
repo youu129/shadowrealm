@@ -1,7 +1,7 @@
 
 # Register your models here.
 from django.contrib import admin
-from .models import Category, Story, Comment
+from .models import Category, Story, Comment, StoryScene
 
 
 @admin.register(Category)
@@ -38,6 +38,9 @@ class StoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',)
     }
+
+
+admin.site.register(StoryScene)
 
 
 @admin.register(Comment)

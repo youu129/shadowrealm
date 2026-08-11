@@ -39,59 +39,402 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #991b1b;
         }
+        main {
+            position: relative;
+            z-index: 1;
+        }
+        /* Navbar */
+        .navbar-glass {
+            position: relative;
+            overflow: hidden;
+            z-index: 50;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.10),
+                    rgba(255,255,255,0.025) 45%,
+                    rgba(255,255,255,0.07)
+                );
+
+            backdrop-filter: blur(18px) saturate(130%);
+            -webkit-backdrop-filter: blur(18px) saturate(130%);
+
+            border-bottom: 1px solid rgba(255,255,255,0.14);
+
+            box-shadow:
+                0 10px 40px rgba(0,0,0,0.5),
+                inset 0 1px rgba(255,255,255,0.06);
+        }
+
+        .navbar-veil {
+            position: absolute;
+            z-index: 0;
+
+            /* Huge triangle */
+            width: 420px;
+            height: 420px;
+
+            top: -210px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            color: #ff2a3a;
+
+            opacity: 0.45;
+
+            pointer-events: none;
+
+            filter:
+                drop-shadow(0 0 18px rgba(255,42,58,.55));
+        }
+
+        .navbar-veil svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .navbar-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Global Illuminati Triangle */
+        .home-triangle {
+            position: fixed;
+
+            width: min(850px, 75vw);
+            height: min(850px, 75vw);
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            color: #ff2a3a;
+
+            opacity: 0.18;
+
+            pointer-events: none;
+
+            filter:
+                blur(1px)
+                drop-shadow(0 0 25px rgba(255,42,58,0.45));
+
+            z-index: 0;
+        }
+
+        .home-triangle svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* GLOBAL GLASS UI */
+        .glass-panel {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.10),
+                    rgba(255,255,255,0.025) 45%,
+                    rgba(255,255,255,0.06)
+                );
+
+            backdrop-filter: blur(18px) saturate(125%);
+            -webkit-backdrop-filter: blur(18px) saturate(125%);
+
+            border: 1px solid rgba(255,255,255,0.13);
+
+            box-shadow:
+                0 24px 80px -20px rgba(0,0,0,0.8),
+                inset 0 1px rgba(255,255,255,0.05);
+
+            border-radius: 1rem;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(255,42,58,0.20);
+        }
+
     </style>
 </head>
 <body class="bg-realm-dark text-gray-300 font-sans min-h-screen flex flex-col antialiased">
+    
+    <!-- BACKGROUND ILLUMINATI TRIANGLE -->
+    <div class="home-triangle" aria-hidden="true">
 
-    <!-- Navigation Bar -->
-    <nav class="bg-black/90 border-b border-realm-border sticky top-0 z-50 backdrop-blur-md">
+        <svg viewBox="0 0 200 180">
+
+            <!-- Outer Triangle -->
+            <polygon
+                points="100,10 190,170 10,170"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                opacity="0.9"
+            />
+
+            <!-- Inner Triangle -->
+            <polygon
+                points="100,38 166,158 34,158"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"
+                opacity="0.45"
+            />
+
+          <!-- Eye boundary -->
+            <defs>
+                <clipPath id="eyeClip">
+                    <path
+                        d="M60 118 Q100 82 140 118 Q100 154 60 118 Z"
+                    />
+                </clipPath>
+            </defs>
+
+            <g class="eye-system" clip-path="url(#eyeClip)">
+
+                <!-- Moving eyeball / iris -->
+                <circle
+                    class="eye-iris"
+                    cx="100"
+                    cy="118"
+                    r="14"
+                    fill="#ff1f2f"
+                    opacity="0.85"
+                />
+
+                <!-- Moving pupil -->
+                <circle
+                    class="eye-pupil"
+                    cx="100"
+                    cy="118"
+                    r="7"
+                    fill="#05070a"
+                />
+
+            </g>
+
+            <!-- Eye outline stays ABOVE the eyeball -->
+            <path
+                d="M60 118 Q100 82 140 118 Q100 154 60 118 Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            />
+        </svg>
+
+    </div>
+
+    <!-- EVERYTHING ELSE GOES HERE -->
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar-glass sticky top-0 z-50">
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                
-                <!-- Brand / Logo -->
-                <div class="flex items-center space-x-3">
-                    <a href="{% url 'home' %}" class="flex items-center space-x-2 group">
-                        <span class="text-2xl">🕷️</span>
-                        <span class="text-xl font-black tracking-widest text-red-600 group-hover:text-red-500 uppercase">
-                            Shadow<span class="text-gray-100">Realm</span>
+
+            <div class="h-20 flex items-center justify-between relative">
+
+                <!-- ================================================= -->
+                <!-- LEFT : LOGO -->
+                <!-- ================================================= -->
+
+                <div class="flex-shrink-0">
+
+                    <a href="{% url 'home' %}"
+                    class="flex items-center gap-2 group">
+
+                        <span class="text-2xl">
+                            🕷️
                         </span>
+
+                        <span class="text-xl font-black tracking-widest
+                                    text-red-600 group-hover:text-red-500
+                                    uppercase transition">
+
+                            Shadow<span class="text-gray-100">Realm</span>
+
+                        </span>
+
                     </a>
+
                 </div>
 
-                <!-- Navigation Links -->
-                <div class="flex items-center space-x-4 sm:space-x-6">
-                    <a href="{% url 'home' %}" class="text-sm font-medium text-gray-300 hover:text-red-500 transition-colors">
+
+                <!-- ================================================= -->
+                <!-- CENTER : MAIN NAVIGATION -->
+                <!-- ================================================= -->
+
+                <div class="absolute left-1/2 transform -translate-x-1/2
+                            flex items-center gap-3">
+
+                    <!-- EXPLORE -->
+
+                    <a href="{% url 'home' %}"
+                    class="px-4 py-2 rounded-lg
+                            text-sm font-medium
+                            text-gray-300
+                            hover:text-white
+                            hover:bg-white/5
+                            transition">
+
                         Explore
+
                     </a>
+
+
+                    <!-- TRENDING -->
+
+                    <a href="{% url 'trending' %}"
+                    class="px-4 py-2 rounded-lg
+                            text-sm font-medium
+                            text-gray-300
+                            hover:text-red-400
+                            hover:bg-white/5
+                            transition">
+
+                        🔥 Trending
+
+                    </a>
+
 
                     {% if user.is_authenticated %}
-                        <a href="{% url 'create_story' %}" class="bg-realm-red hover:bg-realm-redHover text-white text-sm font-semibold px-4 py-2 rounded-md transition-all border border-red-900 shadow-lg shadow-red-950/50 flex items-center space-x-1">
-                            <span>+ Write Story</span>
+
+                        <!-- CREATE STORY -->
+
+                        <a href="{% url 'create_story' %}"
+                        class="px-4 py-2 rounded-lg
+                                bg-red-900/30
+                                border border-red-800/50
+                                text-red-400
+                                text-sm font-semibold
+                                hover:bg-red-900/50
+                                hover:text-red-300
+                                transition">
+
+                            ✍️ Create Story
+
                         </a>
-                        
-                        <!-- User Dropdown / Logout -->
-                        <div class="flex items-center space-x-3 border-l border-realm-border pl-4">
-                            <span class="text-xs font-mono text-gray-400 hidden sm:inline">
-                                @{{ user.username }}
-                            </span>
-                            <form method="POST" action="#" class="inline">
-                                {% csrf_token %}
-                                <button type="submit" class="text-xs font-semibold text-gray-400 hover:text-red-400 transition-colors">
-                                    Logout
-                                </button>
-                            </form>
-                        </div>
-                    {% else %}
-                        <a href="#" class="text-sm font-medium text-gray-300 hover:text-red-500 transition-colors">
-                            Sign In
-                        </a>
-                        <a href="#" class="bg-realm-red hover:bg-realm-redHover text-white text-sm font-semibold px-4 py-2 rounded-md transition-all border border-red-900">
-                            Join Community
-                        </a>
+
                     {% endif %}
+
                 </div>
+
+
+                <!-- ================================================= -->
+                <!-- RIGHT : USER AREA -->
+                <!-- ================================================= -->
+
+                <div class="flex items-center gap-3 ml-auto">
+
+
+                    {% if user.is_authenticated %}
+
+                        <!-- ========================================= -->
+                        <!-- NOTIFICATION -->
+                        <!-- ========================================= -->
+
+                        <!-- NOTIFICATIONS -->
+                        <a href="{% url 'notifications' %}"
+                        class="relative text-xl text-gray-300
+                                hover:text-red-500 transition-colors">
+
+                            🔔
+
+                            {% if unread_notifications > 0 %}
+                                <span
+                                    class="absolute -top-2 -right-2
+                                        min-w-[18px] h-[18px]
+                                        px-1
+                                        flex items-center justify-center
+                                        rounded-full
+                                        bg-red-600
+                                        text-white
+                                        text-[10px]
+                                        font-bold
+                                        border border-red-400">
+
+                                    {{ unread_notifications }}
+
+                                </span>
+                            {% endif %}
+
+                        </a>
+
+
+                        <!-- ========================================= -->
+                        <!-- USERNAME → PROFILE -->
+                        <!-- ========================================= -->
+
+                        <a href="{% url 'profile' %}"
+                        class="text-sm font-mono
+                                text-gray-300
+                                hover:text-red-400
+                                transition">
+
+                            @{{ user.username }}
+
+                        </a>
+
+
+                        <!-- ========================================= -->
+                        <!-- LOGOUT -->
+                        <!-- ========================================= -->
+
+                        <a href="{% url 'logout' %}"
+                        class="px-4 py-2 rounded-lg
+                                bg-red-900/30
+                                border border-red-800/50
+                                text-red-400
+                                text-sm font-semibold
+                                backdrop-blur-md
+                                hover:bg-red-900/60
+                                hover:border-red-700
+                                hover:text-red-300
+                                transition">
+
+                            Logout
+
+                        </a>
+
+
+                    {% else %}
+
+                        <!-- SIGN IN -->
+
+                        <a href="{% url 'login' %}"
+                        class="px-4 py-2
+                                text-sm font-medium
+                                text-gray-300
+                                hover:text-red-400
+                                transition">
+
+                            Sign In
+
+                        </a>
+
+
+                        <!-- REGISTER -->
+
+                        <a href="{% url 'register' %}"
+                        class="px-4 py-2 rounded-lg
+                                bg-red-900/30
+                                border border-red-800/50
+                                text-red-400
+                                text-sm font-semibold
+                                hover:bg-red-900/50
+                                transition">
+
+                            Join Community
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
             </div>
+
         </div>
+
     </nav>
 
     <!-- Main Content Container -->
@@ -121,5 +464,174 @@
         </div>
     </footer>
 
+<!-- Global Illuminati Eye Cursor Tracking -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const eyeSystems = document.querySelectorAll('.eye-system');
+
+    if (!eyeSystems.length) return;
+
+    document.addEventListener('mousemove', function (event) {
+
+        eyeSystems.forEach(function (eyeSystem) {
+
+            const svg = eyeSystem.closest('svg');
+            const iris = eyeSystem.querySelector('.eye-iris');
+            const pupil = eyeSystem.querySelector('.eye-pupil');
+
+            if (!svg || !iris || !pupil) return;
+
+            const rect = svg.getBoundingClientRect();
+
+            /*
+             * ACTUAL EYE CENTER
+             *
+             * SVG viewBox = 200 x 180
+             *
+             * Eye:
+             * left   = 60
+             * right  = 140
+             * top    = 82
+             * bottom = 154
+             *
+             * Therefore the real eye center is:
+             *
+             * X = 100
+             * Y = 118
+             */
+
+            const eyeX =
+                rect.left + (100 / 200) * rect.width;
+
+            const eyeY =
+                rect.top + (118 / 180) * rect.height;
+
+
+            /*
+             * Cursor distance from the ACTUAL eye center.
+             */
+
+            const dx = event.clientX - eyeX;
+            const dy = event.clientY - eyeY;
+
+            const distance = Math.sqrt(
+                dx * dx + dy * dy
+            );
+
+            if (distance === 0) {
+
+                iris.setAttribute('cx', 100);
+                iris.setAttribute('cy', 118);
+
+                pupil.setAttribute('cx', 100);
+                pupil.setAttribute('cy', 118);
+
+                return;
+            }
+
+
+            /*
+             * Direction toward cursor.
+             */
+
+            const directionX = dx / distance;
+            const directionY = dy / distance;
+
+
+            /*
+             * Maximum movement of the RED EYEBALL.
+             *
+             * Horizontal movement is larger because
+             * the eye is wider than it is tall.
+             */
+
+            const maxX = 23;
+            const maxY = 12;
+
+
+            let moveX = directionX * maxX;
+            let moveY = directionY * maxY;
+
+
+            /*
+             * Keep movement inside an ellipse.
+             *
+             * This prevents the eyeball from going too
+             * far toward the corners.
+             */
+
+            const ellipseCheck =
+                Math.sqrt(
+                    (moveX / maxX) * (moveX / maxX) +
+                    (moveY / maxY) * (moveY / maxY)
+                );
+
+            if (ellipseCheck > 1) {
+
+                moveX /= ellipseCheck;
+                moveY /= ellipseCheck;
+
+            }
+
+
+            /*
+             * Calculate final eyeball position.
+             */
+
+            const irisX = 100 + moveX;
+            const irisY = 118 + moveY;
+
+
+            /*
+             * Move RED EYEBALL.
+             */
+
+            iris.setAttribute(
+                'cx',
+                irisX
+            );
+
+            iris.setAttribute(
+                'cy',
+                irisY
+            );
+
+
+            /*
+             * Move BLACK PUPIL WITH THE EYEBALL.
+             *
+             * The pupil follows the iris,
+             * but remains slightly toward the cursor.
+             */
+
+            const pupilFollow = 0.45;
+
+            const pupilX =
+                irisX + (moveX * pupilFollow);
+
+            const pupilY =
+                irisY + (moveY * pupilFollow);
+
+
+            pupil.setAttribute(
+                'cx',
+                pupilX
+            );
+
+            pupil.setAttribute(
+                'cy',
+                pupilY
+            );
+
+        });
+
+    });
+
+});
+</script>
+{% block extra_js %}
+
+{% endblock %}
 </body>
 </html>

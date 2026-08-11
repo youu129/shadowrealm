@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Scene | {{ story.title }} | ShadowRealm
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+
+    <div class="mb-8">
+
+        <a
+            href="{% url 'manage_scenes' story.id %}"
+            class="text-red-500 hover:text-red-400 text-sm"
+        >
+            ← Back to Scene Manager
+        </a>
+
+        <h1 class="text-3xl font-bold text-white mt-4">
+            ✏️ Edit Scene
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+            {{ story.title }}
+        </p>
+
+    </div>
+
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        class="glass-panel p-6 space-y-6"
+    >
+
+        {% csrf_token %}
+
+
+        {% for field in form %}
+
+            <div>
+
+                <label
+                    for="{{ field.id_for_label }}"
+                    class="block text-sm
+                           font-semibold text-gray-200 mb-2"
+                >
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+
+                    <p class="text-xs text-gray-600 mt-1">
+                        {{ field.help_text }}
+                    </p>
+
+                {% endif %}
+
+                {% for error in field.errors %}
+
+                    <p class="text-red-500 text-sm mt-1">
+                        {{ error }}
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        {% endfor %}
+
+
+        <div class="flex flex-col sm:flex-row gap-3">
+
+            <button
+                type="submit"
+                class="flex-1
+                       bg-red-800 hover:bg-red-700
+                       text-white font-semibold
+                       py-3 rounded-lg transition"
+            >
+                💾 Save Scene
+            </button>
+
+
+            <a
+                href="{% url 'manage_scenes' story.id %}"
+                class="sm:w-48
+                       py-3
+                       bg-white/5 hover:bg-white/10
+                       border border-white/10
+                       text-gray-300
+                       font-semibold
+                       rounded-lg
+                       flex items-center
+                       justify-center
+                       transition"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<style>
+
+input,
+select,
+textarea {
+    color: #f3f4f6 !important;
+    background-color: #171717 !important;
+    border: 1px solid #333 !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 15px !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none !important;
+    border-color: #991b1b !important;
+    box-shadow: 0 0 0 1px #991b1b !important;
+}
+
+input[type="checkbox"] {
+    width: auto !important;
+    accent-color: #991b1b;
+}
+
+input[type="file"] {
+    padding: 9px !important;
+    cursor: pointer;
+}
+
+</style>
+
+{% endblock %}

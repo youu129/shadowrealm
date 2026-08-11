@@ -1,16 +1,1035 @@
-<form method="POST" action="{% url 'create_story' %}" class="bg-gray-900 p-6 rounded-lg text-white">
-    {% csrf_token %}
+{% extends 'base.html' %}
 
-    <label class="block mb-2 font-bold">Story Title</label>
-    {{ form.title }}
+{% block title %}
+Write a Story | ShadowRealm
+{% endblock %}
 
-    <label class="block my-2 font-bold">Category</label>
-    {{ form.category }}
+{% block content %}
 
-    <label class="block my-2 font-bold">Content</label>
-    {{ form.content }}
+<div class="max-w-5xl mx-auto">
 
-    <button type="submit" class="mt-4 bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
-        Publish Story
-    </button>
-</form>
+    <!-- HEADER -->
+
+    <div class="mb-8">
+
+        <h1 class="text-3xl font-bold text-white">
+            Write Your Story
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+            Share your darkest experience with the ShadowRealm community.
+        </p>
+
+    </div>
+
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        class="space-y-8"
+    >
+
+        {% csrf_token %}
+
+
+        <!-- ================================= -->
+        <!-- NORMAL STORY INFORMATION -->
+        <!-- ================================= -->
+
+        <div class="glass-panel p-6 space-y-6">
+
+            <div>
+
+                <h2 class="text-xl font-bold text-white">
+                    Story Information
+                </h2>
+
+                <p class="text-gray-500 text-sm mt-1">
+                    Create the basic information for your story.
+                </p>
+
+            </div>
+
+
+            {% for field in form %}
+
+                {% if field.name != 'horror_mode' %}
+
+                    <div>
+
+                        <label
+                            for="{{ field.id_for_label }}"
+                            class="block text-sm font-semibold text-gray-200 mb-2"
+                        >
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+
+                            <p class="text-xs text-gray-600 mt-1">
+                                {{ field.help_text }}
+                            </p>
+
+                        {% endif %}
+
+                        {% for error in field.errors %}
+
+                            <p class="text-red-500 text-sm mt-1">
+                                {{ error }}
+                            </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- HORROR MODE -->
+        <!-- ================================= -->
+
+        <div class="glass-panel p-6">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <h2 class="text-xl font-bold text-white">
+                        🩸 Horror Mode
+                    </h2>
+
+                    <p class="text-gray-500 text-sm mt-1">
+                        Turn your story into an interactive horror experience.
+                    </p>
+
+                </div>
+
+
+                <label class="relative inline-flex items-center cursor-pointer">
+
+                    {{ form.horror_mode }}
+
+                    <span
+                        class="ml-3 text-sm text-gray-400"
+                        id="horrorModeText"
+                    >
+                        OFF
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- HORROR MODE INFORMATION -->
+
+            <div
+                id="horrorModeInfo"
+                class="hidden mt-6 p-4 rounded-lg
+                       bg-red-950/20
+                       border border-red-900/40"
+            >
+
+                <p class="text-sm text-gray-400">
+
+                    🩸 Horror Mode reveals your story progressively.
+                    Images and sounds can change as the reader reaches
+                    specific words.
+
+                </p>
+
+                <p class="text-xs text-gray-600 mt-2">
+
+                    Jumpscare scenes should contain both a jumpscare image
+                    and jumpscare audio for the best experience.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- STORY SCENES -->
+        <!-- ================================= -->
+
+        <div
+            id="scenesContainer"
+            class="hidden"
+        >
+
+            <div class="flex items-center justify-between mb-5">
+
+                <div>
+
+                    <h2 class="text-xl font-bold text-white">
+                        🎬 Interactive Scenes
+                    </h2>
+
+                    <p class="text-gray-500 text-sm mt-1">
+                        Decide when images, sounds and jumpscares appear
+                        during your story.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- IMPORTANT DJANGO FORMSET MANAGEMENT -->
+
+            {{ scene_formset.management_form }}
+
+
+            <div id="sceneForms">
+
+                {% for scene_form in scene_formset %}
+
+                    <div
+                        class="scene-form glass-panel p-6 mb-5"
+                    >
+
+                        <!-- SCENE HEADER -->
+
+                        <div class="flex items-center justify-between mb-5">
+
+                            <h3 class="text-lg font-bold text-white">
+
+                                Scene
+                                <span class="scene-number">
+                                    {{ forloop.counter }}
+                                </span>
+
+                            </h3>
+
+
+                            <button
+                                type="button"
+                                class="remove-scene text-red-500
+                                       hover:text-red-400 text-sm"
+                            >
+                                🗑 Remove
+                            </button>
+
+                        </div>
+
+
+                        <!-- HIDDEN FIELDS -->
+
+                        {% for hidden in scene_form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+
+                        <!-- ================================= -->
+                        <!-- SCENE TEXT -->
+                        <!-- ================================= -->
+
+                        <div class="mb-5">
+
+                            <label
+                                for="{{ scene_form.text.id_for_label }}"
+                                class="block text-sm font-semibold text-gray-200 mb-2"
+                            >
+                                📝 Scene Text
+                            </label>
+
+                            {{ scene_form.text }}
+
+                            <p class="text-xs text-gray-600 mt-1">
+                                Text that will be revealed when this scene is triggered.
+                            </p>
+
+                            {% for error in scene_form.text.errors %}
+                                <p class="text-red-500 text-sm mt-1">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- ================================= -->
+                        <!-- SCENE IMAGE -->
+                        <!-- ================================= -->
+
+                        <div class="mb-5">
+
+                            <label
+                                for="{{ scene_form.image.id_for_label }}"
+                                class="block text-sm font-semibold text-gray-200 mb-2"
+                            >
+                                🖼 Scene Image
+                            </label>
+
+                            {{ scene_form.image }}
+
+                            <p class="text-xs text-gray-600 mt-1">
+                                Image displayed when this scene is revealed.
+                            </p>
+
+                            {% for error in scene_form.image.errors %}
+
+                                <p class="text-red-500 text-sm mt-1">
+                                    {{ error }}
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- ================================= -->
+                        <!-- SCENE AUDIO -->
+                        <!-- ================================= -->
+
+                        <div class="mb-5">
+
+                            <label
+                                for="{{ scene_form.audio.id_for_label }}"
+                                class="block text-sm font-semibold text-gray-200 mb-2"
+                            >
+                                🔊 Scene Audio
+                            </label>
+
+                            {{ scene_form.audio }}
+
+                            <p class="text-xs text-gray-600 mt-1">
+                                Optional background or atmospheric sound
+                                for this scene.
+                            </p>
+
+                            {% for error in scene_form.audio.errors %}
+
+                                <p class="text-red-500 text-sm mt-1">
+                                    {{ error }}
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- ================================= -->
+                        <!-- JUMPSCARE -->
+                        <!-- ================================= -->
+
+                        <div
+                            class="p-4 rounded-lg
+                                   bg-black/30
+                                   border border-white/10"
+                        >
+
+                            <div class="flex items-center justify-between">
+
+                                <div>
+
+                                    <p class="font-semibold text-white">
+                                        💀 Jumpscare
+                                    </p>
+
+                                    <p class="text-xs text-gray-600 mt-1">
+                                        Trigger a visual and audio jumpscare
+                                        when this scene is reached.
+                                    </p>
+
+                                </div>
+
+
+                                <label
+                                    class="inline-flex items-center cursor-pointer"
+                                >
+
+                                    {{ scene_form.is_jumpscare }}
+
+                                    <span
+                                        class="jumpscare-status ml-3
+                                               text-sm text-gray-500"
+                                    >
+                                        OFF
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+
+                            <!-- ================================= -->
+                            <!-- JUMPSCARE OPTIONS -->
+                            <!-- ================================= -->
+
+                            <div
+                                class="jumpscare-options hidden mt-5 space-y-5"
+                            >
+
+                                <!-- JUMPSCARE IMAGE -->
+
+                                <div>
+
+                                    <label
+                                        for="{{ scene_form.jumpscare_image.id_for_label }}"
+                                        class="block text-sm font-semibold text-gray-200 mb-2"
+                                    >
+                                        💀 Jumpscare Image
+                                    </label>
+
+                                    {{ scene_form.jumpscare_image }}
+
+                                    <p class="text-xs text-gray-600 mt-1">
+                                        Image displayed during the jumpscare.
+                                    </p>
+
+                                    {% for error in scene_form.jumpscare_image.errors %}
+
+                                        <p class="text-red-500 text-sm mt-1">
+                                            {{ error }}
+                                        </p>
+
+                                    {% endfor %}
+
+                                </div>
+
+
+                                <!-- JUMPSCARE AUDIO -->
+
+                                <div>
+
+                                    <label
+                                        for="{{ scene_form.jumpscare_audio.id_for_label }}"
+                                        class="block text-sm font-semibold text-gray-200 mb-2"
+                                    >
+                                        🔊 Jumpscare Audio
+                                    </label>
+
+                                    {{ scene_form.jumpscare_audio }}
+
+                                    <p class="text-xs text-red-500 mt-1">
+                                        Jumpscare audio is required for the
+                                        full horror experience.
+                                    </p>
+
+                                    {% for error in scene_form.jumpscare_audio.errors %}
+
+                                        <p class="text-red-500 text-sm mt-1">
+                                            {{ error }}
+                                        </p>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- ADD SCENE -->
+            <!-- ================================= -->
+
+            <button
+                type="button"
+                id="addScene"
+                class="w-full py-4 rounded-lg
+                       border border-dashed border-red-900
+                       text-red-500
+                       hover:bg-red-950/20
+                       transition"
+            >
+
+                + Add Another Scene
+
+            </button>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- SUBMIT -->
+        <!-- ================================= -->
+
+        <button
+            type="submit"
+            class="w-full bg-red-800 hover:bg-red-700
+                   text-white font-semibold
+                   py-3 rounded-lg transition"
+        >
+
+            🩸 Publish Story
+
+        </button>
+
+    </form>
+
+</div>
+
+
+<style>
+
+/* ========================================= */
+/* FORM ELEMENTS */
+/* ========================================= */
+
+input,
+select,
+textarea {
+
+    color: #f3f4f6 !important;
+
+    background-color: #171717 !important;
+
+    border: 1px solid #333 !important;
+
+    border-radius: 8px !important;
+
+    padding: 12px !important;
+
+    width: 100%;
+
+    font-family: Arial, Helvetica, sans-serif !important;
+
+    font-size: 15px !important;
+
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+
+    outline: none !important;
+
+    border-color: #991b1b !important;
+
+    box-shadow: 0 0 0 1px #991b1b !important;
+
+}
+
+
+select option {
+
+    background: #171717;
+
+    color: white;
+
+}
+
+
+input::placeholder,
+textarea::placeholder {
+
+    color: #777 !important;
+
+}
+
+
+/* ========================================= */
+/* HORROR MODE TOGGLE */
+/* ========================================= */
+
+.horror-toggle {
+
+    appearance: none;
+
+    width: 46px !important;
+
+    height: 24px !important;
+
+    background: #333 !important;
+
+    border-radius: 999px !important;
+
+    padding: 0 !important;
+
+    cursor: pointer;
+
+    position: relative;
+
+    transition: 0.25s;
+
+}
+
+
+.horror-toggle:checked {
+
+    background: #991b1b !important;
+
+}
+
+
+.horror-toggle::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 18px;
+
+    height: 18px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    left: 3px;
+
+    top: 3px;
+
+    transition: 0.25s;
+
+}
+
+
+.horror-toggle:checked::after {
+
+    left: 25px;
+
+}
+
+
+/* ========================================= */
+/* JUMPSCARE TOGGLE */
+/* ========================================= */
+
+.jumpscare-toggle {
+
+    appearance: none;
+
+    width: 46px !important;
+
+    height: 24px !important;
+
+    background: #333 !important;
+
+    border-radius: 999px !important;
+
+    padding: 0 !important;
+
+    cursor: pointer;
+
+    position: relative;
+
+    transition: 0.25s;
+
+}
+
+
+.jumpscare-toggle:checked {
+
+    background: #991b1b !important;
+
+}
+
+
+.jumpscare-toggle::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 18px;
+
+    height: 18px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    left: 3px;
+
+    top: 3px;
+
+    transition: 0.25s;
+
+}
+
+
+.jumpscare-toggle:checked::after {
+
+    left: 25px;
+
+}
+
+
+/* ========================================= */
+/* FILE INPUT */
+/* ========================================= */
+
+input[type="file"] {
+
+    cursor: pointer;
+
+    padding: 10px !important;
+
+}
+
+
+/* ========================================= */
+/* REMOVE SCENE */
+/* ========================================= */
+
+.remove-scene {
+
+    background: transparent;
+
+    border: none;
+
+    cursor: pointer;
+
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* ===================================== */
+    /* HORROR MODE */
+    /* ===================================== */
+
+    const horrorToggle =
+        document.querySelector(".horror-toggle");
+
+    const horrorInfo =
+        document.getElementById("horrorModeInfo");
+
+    const scenesContainer =
+        document.getElementById("scenesContainer");
+
+    const horrorModeText =
+        document.getElementById("horrorModeText");
+
+
+    function updateHorrorMode() {
+
+        if (!horrorToggle) return;
+
+
+        if (horrorToggle.checked) {
+
+            horrorInfo.classList.remove("hidden");
+
+            scenesContainer.classList.remove("hidden");
+
+            horrorModeText.textContent = "ON";
+
+        } else {
+
+            horrorInfo.classList.add("hidden");
+
+            scenesContainer.classList.add("hidden");
+
+            horrorModeText.textContent = "OFF";
+
+        }
+
+    }
+
+
+    if (horrorToggle) {
+
+        horrorToggle.addEventListener(
+            "change",
+            updateHorrorMode
+        );
+
+        updateHorrorMode();
+
+    }
+
+
+    /* ===================================== */
+    /* JUMPSCARE TOGGLE */
+    /* ===================================== */
+
+    function setupJumpscare(scene) {
+
+        const toggle =
+            scene.querySelector(".jumpscare-toggle");
+
+        const options =
+            scene.querySelector(".jumpscare-options");
+
+        const status =
+            scene.querySelector(".jumpscare-status");
+
+
+        if (!toggle || !options || !status) {
+            return;
+        }
+
+
+        function updateJumpscare() {
+
+            if (toggle.checked) {
+
+                options.classList.remove("hidden");
+
+                status.textContent = "ON";
+
+                status.classList.remove(
+                    "text-gray-500"
+                );
+
+                status.classList.add(
+                    "text-red-500"
+                );
+
+            } else {
+
+                options.classList.add("hidden");
+
+                status.textContent = "OFF";
+
+                status.classList.remove(
+                    "text-red-500"
+                );
+
+                status.classList.add(
+                    "text-gray-500"
+                );
+
+            }
+
+        }
+
+
+        toggle.addEventListener(
+            "change",
+            updateJumpscare
+        );
+
+
+        updateJumpscare();
+
+    }
+
+
+    document
+        .querySelectorAll(".scene-form")
+        .forEach(setupJumpscare);
+
+
+    /* ===================================== */
+    /* ADD SCENE */
+    /* ===================================== */
+
+    const addScene =
+        document.getElementById("addScene");
+
+    const sceneForms =
+        document.getElementById("sceneForms");
+
+    const totalForms =
+        document.getElementById(
+            "id_scenes-TOTAL_FORMS"
+        );
+
+
+    if (addScene && sceneForms && totalForms) {
+
+        addScene.addEventListener(
+            "click",
+            function () {
+
+                const formCount =
+                    parseInt(totalForms.value);
+
+
+                const firstScene =
+                    document.querySelector(".scene-form");
+
+
+                if (!firstScene) return;
+
+
+                const newScene =
+                    firstScene.cloneNode(true);
+
+
+                /*
+                 * Replace Django indexes BEFORE
+                 * clearing values.
+                 */
+
+                newScene.innerHTML =
+                    newScene.innerHTML.replace(
+                        /scenes-\d+/g,
+                        `scenes-${formCount}`
+                    );
+
+
+                /*
+                 * Clear all inputs.
+                 */
+
+                newScene
+                    .querySelectorAll("input, textarea, select")
+                    .forEach(function (input) {
+
+                        if (input.type === "checkbox") {
+
+                            input.checked = false;
+
+                        } else if (
+                            input.type === "file"
+                        ) {
+
+                            /*
+                             * File inputs cannot safely
+                             * be assigned a value.
+                             */
+
+                            input.value = "";
+
+                        } else {
+
+                            input.value = "";
+
+                        }
+
+                    });
+
+
+                /*
+                 * Set default reveal word.
+                 */
+
+                const revealInput =
+                    newScene.querySelector(
+                        '[name$="-reveal_at_word"]'
+                    );
+
+                if (revealInput) {
+                    revealInput.value = "1";
+                }
+
+
+                /*
+                 * Update scene number.
+                 */
+
+                const sceneNumber =
+                    newScene.querySelector(
+                        ".scene-number"
+                    );
+
+                if (sceneNumber) {
+
+                    sceneNumber.textContent =
+                        formCount + 1;
+
+                }
+
+
+                /*
+                 * Append new scene.
+                 */
+
+                sceneForms.appendChild(
+                    newScene
+                );
+
+
+                /*
+                 * Update TOTAL_FORMS.
+                 */
+
+                totalForms.value =
+                    formCount + 1;
+
+
+                /*
+                 * Activate jumpscare JS.
+                 */
+
+                setupJumpscare(
+                    newScene
+                );
+
+            }
+        );
+
+    }
+
+
+    /* ===================================== */
+    /* REMOVE SCENE */
+    /* ===================================== */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    ".remove-scene"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const scene =
+                button.closest(".scene-form");
+
+
+            if (!scene) {
+                return;
+            }
+
+
+            /*
+             * Existing database scene:
+             * use Django DELETE field.
+             */
+
+            const deleteInput =
+                scene.querySelector(
+                    'input[name$="-DELETE"]'
+                );
+
+
+            if (deleteInput) {
+
+                deleteInput.checked = true;
+
+                scene.style.display = "none";
+
+            } else {
+
+                /*
+                 * Newly added scene.
+                 * Remove it visually from
+                 * the formset.
+                 */
+
+                scene.remove();
+
+            }
+
+        }
+    );
+
+});
+
+</script>
+
+{% endblock %}

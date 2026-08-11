@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Manage Scenes | {{ story.title }} | ShadowRealm
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto">
+
+    <!-- HEADER -->
+
+    <div class="mb-8">
+
+        <a
+            href="{% url 'story_detail' story.slug %}"
+            class="text-red-500 hover:text-red-400 text-sm"
+        >
+            ← Back to Story
+        </a>
+
+        <h1 class="text-3xl font-bold text-white mt-4">
+            🎬 Scene Manager
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+            {{ story.title }}
+        </p>
+
+    </div>
+
+
+    <!-- ADD SCENE -->
+
+    <div class="glass-panel p-6 mb-8">
+
+        <h2 class="text-xl font-bold text-white mb-2">
+            Add New Scene
+        </h2>
+
+        <p class="text-gray-600 text-sm mb-6">
+            Add text, image, sound and an optional jumpscare.
+        </p>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+            class="space-y-6"
+        >
+
+            {% csrf_token %}
+
+
+            {% for field in form %}
+
+                <div>
+
+                    <label
+                        for="{{ field.id_for_label }}"
+                        class="block text-sm font-semibold
+                               text-gray-200 mb-2"
+                    >
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+
+                        <p class="text-xs text-gray-600 mt-1">
+                            {{ field.help_text }}
+                        </p>
+
+                    {% endif %}
+
+                    {% for error in field.errors %}
+
+                        <p class="text-red-500 text-sm mt-1">
+                            {{ error }}
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endfor %}
+
+
+            <button
+                type="submit"
+                class="w-full
+                       bg-red-800 hover:bg-red-700
+                       text-white font-semibold
+                       py-3 rounded-lg
+                       transition"
+            >
+                + Add Scene
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- EXISTING SCENES -->
+
+    <div>
+
+        <div class="flex items-center justify-between mb-5">
+
+            <div>
+
+                <h2 class="text-2xl font-bold text-white">
+                    Existing Scenes
+                </h2>
+
+                <p class="text-gray-600 text-sm mt-1">
+                    {{ scenes|length }} scene{{ scenes|length|pluralize }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if scenes %}
+
+            <div class="space-y-5">
+
+                {% for scene in scenes %}
+
+                    <div class="glass-panel p-6">
+
+                        <!-- HEADER -->
+
+                        <div
+                            class="flex flex-col sm:flex-row
+                                   sm:items-start
+                                   sm:justify-between
+                                   gap-4"
+                        >
+
+                            <div>
+
+                                <div class="flex items-center gap-3">
+
+                                    <span
+                                        class="text-red-500
+                                               text-xs uppercase
+                                               tracking-wider"
+                                    >
+                                        Scene {{ forloop.counter }}
+                                    </span>
+
+
+                                    {% if scene.is_jumpscare %}
+
+                                        <span
+                                            class="px-3 py-1
+                                                   rounded-full
+                                                   bg-red-900/40
+                                                   border border-red-700
+                                                   text-red-400
+                                                   text-xs font-semibold"
+                                        >
+                                            💀 JUMPSCARE
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="px-3 py-1
+                                                   rounded-full
+                                                   bg-white/5
+                                                   border border-white/10
+                                                   text-gray-500
+                                                   text-xs"
+                                        >
+                                            Normal Scene
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <h3
+                                    class="text-lg font-bold
+                                           text-white mt-2"
+                                >
+                                    Reveal at word
+                                    {{ scene.reveal_at_word }}
+                                </h3>
+
+                            </div>
+
+
+                            <!-- ACTIONS -->
+
+                            <div class="flex gap-2">
+
+                                <a
+                                    href="{% url 'edit_scene' scene.id %}"
+                                    class="px-4 py-2
+                                           rounded-lg
+                                           bg-white/5
+                                           border border-white/10
+                                           text-gray-300
+                                           hover:text-red-400
+                                           hover:bg-white/10
+                                           text-sm transition"
+                                >
+                                    ✏️ Edit
+                                </a>
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'delete_scene' scene.id %}"
+                                    onsubmit="return confirm(
+                                        'Delete this scene permanently?'
+                                    );"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="px-4 py-2
+                                               rounded-lg
+                                               bg-red-950/30
+                                               border border-red-900/50
+                                               text-red-500
+                                               hover:bg-red-950/60
+                                               text-sm transition"
+                                    >
+                                        🗑 Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SCENE TEXT -->
+
+                        <div class="mt-5">
+
+                            <p
+                                class="text-gray-400
+                                       leading-relaxed"
+                            >
+                                {{ scene.text|truncatechars:300 }}
+                            </p>
+
+                        </div>
+
+
+                        <!-- MEDIA -->
+
+                        <div
+                            class="flex flex-wrap
+                                   gap-3 mt-5
+                                   text-xs"
+                        >
+
+                            {% if scene.image %}
+
+                                <span
+                                    class="px-3 py-1.5
+                                           rounded-lg
+                                           bg-white/5
+                                           text-gray-400"
+                                >
+                                    🖼 Scene Image
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if scene.audio %}
+
+                                <span
+                                    class="px-3 py-1.5
+                                           rounded-lg
+                                           bg-white/5
+                                           text-gray-400"
+                                >
+                                    🔊 Scene Audio
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if scene.jumpscare_image %}
+
+                                <span
+                                    class="px-3 py-1.5
+                                           rounded-lg
+                                           bg-red-950/30
+                                           text-red-400"
+                                >
+                                    👁 Jumpscare Image
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if scene.jumpscare_audio %}
+
+                                <span
+                                    class="px-3 py-1.5
+                                           rounded-lg
+                                           bg-red-950/30
+                                           text-red-400"
+                                >
+                                    💀 Jumpscare Audio
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="glass-panel p-10 text-center">
+
+                <div class="text-4xl mb-4">
+                    🎬
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-300">
+                    No scenes yet
+                </h3>
+
+                <p class="text-gray-600 text-sm mt-2">
+                    Add your first scene above.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<style>
+
+input,
+select,
+textarea {
+    color: #f3f4f6 !important;
+    background-color: #171717 !important;
+    border: 1px solid #333 !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 15px !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none !important;
+    border-color: #991b1b !important;
+    box-shadow: 0 0 0 1px #991b1b !important;
+}
+
+input[type="checkbox"] {
+    width: auto !important;
+    accent-color: #991b1b;
+}
+
+input[type="file"] {
+    padding: 9px !important;
+    cursor: pointer;
+}
+
+</style>
+
+{% endblock %}

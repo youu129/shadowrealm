@@ -1,57 +1,1381 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ story.title }} | ShadowRealm{% endblock %}
+{% block title %}
+{{ story.title }} | ShadowRealm
+{% endblock %}
 
 {% block content %}
 
-<article class="bg-realm-card border border-realm-border rounded-xl p-6">
+<div class="max-w-6xl mx-auto">
 
-    <div class="mb-4">
-        <span class="text-red-500 text-xs uppercase">
-            {{ story.category.name|default:"Uncategorized" }}
-        </span>
+    <!-- ================================= -->
+    <!-- STORY HEADER -->
+    <!-- ================================= -->
 
-        <h1 class="text-3xl font-bold text-white mt-2">
-            {{ story.title }}
-        </h1>
+    <div class="glass-panel p-6 mb-6">
 
-        <p class="text-gray-500 text-sm mt-2">
-            By @{{ story.author.username }}
-            · {{ story.created_at|date:"M d, Y" }}
-        </p>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+            <div>
+
+                <p class="text-red-500 text-sm uppercase">
+                    {{ story.category.name|default:"Horror" }}
+                </p>
+
+                <h1 class="text-4xl font-bold text-white mt-2">
+                    {{ story.title }}
+                </h1>
+
+                <p class="text-gray-500 mt-2">
+                    By @{{ story.author.username }}
+                </p>
+
+            </div>
+
+
+            <!-- HORROR MODE BUTTON -->
+
+            {% if story.horror_mode %}
+
+            <button
+                type="button"
+                id="horrorModeButton"
+                class="px-5 py-3 rounded-lg
+                       bg-red-900/30
+                       border border-red-800
+                       text-red-400
+                       hover:bg-red-900/50
+                       transition"
+            >
+                🩸 Horror Mode: OFF
+            </button>
+
+            {% endif %}
+
+        </div>
+
     </div>
 
-    {% if story.summary %}
-        <p class="text-gray-400 mb-6">
-            {{ story.summary }}
-        </p>
-    {% endif %}
 
-    <div class="text-gray-300 leading-8">
-        {{ story.content|safe }}
+    <!-- ================================= -->
+    <!-- NORMAL STORY -->
+    <!-- ================================= -->
+
+    <div
+        id="normalStory"
+        class="glass-panel p-8 mb-8"
+    >
+
+        {% if story.cover_image %}
+
+        <img
+            src="{{ story.cover_image.url }}"
+            class="w-full max-h-[500px] object-cover rounded-xl mb-8"
+        >
+
+        {% endif %}
+
+
+        <div
+            class="prose prose-invert max-w-none
+                   text-gray-300 leading-8"
+        >
+
+            {{ story.content|safe }}
+
+        </div>
+
     </div>
 
-    <div class="mt-8 pt-5 border-t border-realm-border">
 
-        {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'upvote_story' story.id %}">
-                {% csrf_token %}
+    <!-- ================================= -->
+    <!-- HORROR READER -->
+    <!-- ================================= -->
+
+    {% if story.horror_mode %}
+
+    <div
+        id="horrorReader"
+        class="hidden"
+    >
+
+        <!-- AUDIO PERMISSION -->
+
+        <div
+            id="audioPermission"
+            class="glass-panel p-8 text-center mb-6"
+        >
+
+            <div class="text-5xl mb-4">
+                🔊
+            </div>
+
+            <h2 class="text-2xl font-bold text-white">
+                Sound Required
+            </h2>
+
+            <p class="text-gray-500 mt-3 max-w-xl mx-auto">
+
+                Horror Mode requires sound for jumpscares
+                and atmospheric effects.
+
+                Please allow sound to continue.
+
+            </p>
+
+            <button
+                type="button"
+                id="enableSound"
+                class="mt-6 px-6 py-3
+                       bg-red-800
+                       hover:bg-red-700
+                       text-white
+                       rounded-lg
+                       font-semibold"
+            >
+                🔊 Enable Sound
+            </button>
+
+        </div>
+
+
+        <!-- READER -->
+
+        <div
+            id="readerInterface"
+            class="hidden"
+        >
+
+            <!-- IMAGE SIDE -->
+
+            <div
+                class="grid grid-cols-1 lg:grid-cols-2
+                       gap-6"
+            >
+
+                <div
+                    id="sceneImageContainer"
+                    class="glass-panel
+                           min-h-[400px]
+                           flex items-center
+                           justify-center
+                           overflow-hidden"
+                >
+
+                    <div
+                        id="scenePlaceholder"
+                        class="text-gray-600 text-center"
+                    >
+
+                        <div class="text-6xl mb-4">
+                            🕯️
+                        </div>
+
+                        <p>
+                            The darkness awaits...
+                        </p>
+
+                    </div>
+
+                    <img
+                        id="sceneImage"
+                        src=""
+                        class="hidden w-full h-full
+                               object-cover
+                               rounded-xl"
+                    >
+
+                </div>
+
+
+                <!-- STORY TEXT -->
+
+                <div
+                    class="glass-panel p-8
+                           min-h-[400px]
+                           flex flex-col"
+                >
+
+                    <div class="flex-1">
+
+                        <p
+                            id="horrorText"
+                            class="text-gray-200
+                                   text-lg
+                                   leading-9"
+                        ></p>
+
+                    </div>
+
+
+                    <!-- PROGRESS -->
+
+                    <div class="mt-8">
+
+                        <div
+                            class="h-1
+                                   bg-gray-800
+                                   rounded-full
+                                   overflow-hidden"
+                        >
+
+                            <div
+                                id="readerProgress"
+                                class="h-full
+                                       bg-red-800"
+                                style="width:0%"
+                            ></div>
+
+                        </div>
+
+
+                        <div
+                            class="flex
+                                   justify-between
+                                   text-xs
+                                   text-gray-600
+                                   mt-2"
+                        >
+
+                            <span id="wordCounter">
+                                0 words
+                            </span>
+
+                            <span>
+                                ← / → to continue
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+              <!-- SCENE AUDIO -->
+            <audio id="sceneAudio"></audio>
+
+            <!-- CONTROLS -->
+
+            <div
+                class="glass-panel
+                       p-5
+                       mt-6
+                       flex items-center
+                       justify-between"
+            >
 
                 <button
-                    type="submit"
-                    class="bg-gray-800 text-red-500 font-bold px-4 py-2 rounded border border-red-900"
+                    type="button"
+                    id="previousWord"
+                    class="px-5 py-3
+                           rounded-lg
+                           bg-gray-800
+                           text-gray-300
+                           hover:bg-gray-700"
                 >
-                    ▲ Upvote ({{ story.total_upvotes }})
+                    ← Previous
                 </button>
-            </form>
-        {% else %}
-            <p class="text-gray-500 text-sm">
-                Sign in to upvote this story.
-            </p>
+
+
+                <span
+                    id="readerStatus"
+                    class="text-gray-500 text-sm"
+                >
+                    Press → to begin
+                </span>
+
+
+                <button
+                    type="button"
+                    id="nextWord"
+                    class="px-5 py-3
+                           rounded-lg
+                           bg-red-800
+                           text-white
+                           hover:bg-red-700"
+                >
+                    Next →
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+ <!-- ================================= -->
+<!-- STORY ACTIONS -->
+<!-- ================================= -->
+
+<div class="glass-panel p-5 mb-8">
+
+    <div class="flex flex-wrap gap-3">
+
+        <!-- UPVOTE -->
+        <a
+            href="{% url 'upvote_story' story.id %}"
+            class="px-4 py-2 rounded-lg
+                   bg-gray-800 text-gray-300
+                   hover:bg-gray-700"
+        >
+            ▲ Upvote
+        </a>
+
+        <!-- FAVORITE -->
+        <a
+            href="{% url 'favorite_story' story.id %}"
+            class="px-4 py-2 rounded-lg
+                   bg-gray-800 text-gray-300
+                   hover:bg-gray-700"
+        >
+            ⭐ Save
+        </a>
+
+        <!-- COPY LINK -->
+        <button
+            type="button"
+            id="copyLinkButton"
+            class="px-4 py-2 rounded-lg
+                   bg-gray-800 text-gray-300
+                   hover:bg-gray-700"
+        >
+            🔗 Copy Link
+        </button>
+
+        <!-- WHATSAPP -->
+        <a
+            id="whatsappShare"
+            href="https://wa.me/?text={{ request.build_absolute_uri|urlencode }}"
+            target="_blank"
+            rel="noopener"
+            class="px-4 py-2 rounded-lg
+                   bg-green-900/40 text-green-400
+                   hover:bg-green-900/60"
+        >
+            💬 Share to WhatsApp
+        </a>
+
+        <!-- DELETE -->
+        {% if user == story.author %}
+
+	<a
+	    href="{% url 'edit_story' story.id %}"
+            class="px-4 py-2 rounded-lg
+                    bg-gray-800
+                    text-gray-300
+                    hover:bg-gray-700"
+        >
+            ✏️ Edit
+        </a>
+
+
+        <a
+            href="{% url 'delete_story' story.id %}"
+            class="px-4 py-2 rounded-lg
+                   bg-red-900/40 text-red-400
+                   hover:bg-red-900/60"
+        >
+            🗑 Delete Story
+        </a>
+
         {% endif %}
 
     </div>
 
-</article>
+    <p
+        id="copyMessage"
+        class="hidden text-green-500 text-sm mt-3"
+    >
+        ✓ Link copied!
+    </p>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- COMMENTS -->
+<!-- ================================= -->
+
+<div class="glass-panel p-6">
+
+    <div class="flex items-center justify-between mb-6">
+
+        <h2 class="text-2xl font-bold text-white">
+            💬 Comments
+        </h2>
+
+        <span class="text-sm text-gray-600">
+            {{ story.comments.count }}
+        </span>
+
+    </div>
+
+
+    <!-- ADD COMMENT -->
+
+    {% if user.is_authenticated %}
+
+        <form
+            method="POST"
+            action="{% url 'add_comment' story.slug %}"
+            class="mb-8"
+        >
+
+            {% csrf_token %}
+
+            <textarea
+                name="body"
+                rows="4"
+                required
+                placeholder="Leave a comment..."
+                class="w-full bg-black/40
+                       border border-white/10
+                       rounded-lg p-4
+                       text-gray-200
+                       placeholder-gray-600
+                       focus:outline-none
+                       focus:border-red-700
+                       resize-y"
+            ></textarea>
+
+            <button
+                type="submit"
+                class="mt-3 px-5 py-2
+                       bg-red-800
+                       hover:bg-red-700
+                       text-white
+                       rounded-lg
+                       font-semibold
+                       transition"
+            >
+                Comment
+            </button>
+
+        </form>
+
+    {% else %}
+
+        <div
+            class="mb-8 p-4 rounded-lg
+                   bg-white/5
+                   border border-white/10"
+        >
+            <p class="text-gray-500 text-sm">
+                Sign in to join the discussion.
+            </p>
+        </div>
+
+    {% endif %}
+
+
+    <!-- EXISTING COMMENTS -->
+
+    <div class="space-y-6">
+
+        {% for comment in comments %}
+
+            <!-- MAIN COMMENT -->
+
+            <div
+                class="border-b border-white/10
+                       pb-6"
+            >
+
+                <!-- COMMENT HEADER -->
+
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+
+                        <strong class="text-white">
+                            @{{ comment.author.username }}
+                        </strong>
+
+                        <span class="text-gray-700 text-xs ml-2">
+                            {{ comment.created_at|date:"M d, Y · H:i" }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- COMMENT BODY -->
+
+                <p class="text-gray-400 mt-3 leading-relaxed">
+                    {{ comment.body }}
+                </p>
+
+
+                <!-- COMMENT ACTIONS -->
+
+                <div class="flex flex-wrap items-center gap-4 mt-4">
+
+                    {% if user.is_authenticated %}
+
+                        <!-- REPLY -->
+
+                        <button
+                            type="button"
+                            onclick="toggleReply('{{ comment.id }}')"
+                            class="text-xs
+                                   text-red-500
+                                   hover:text-red-400
+                                   transition"
+                        >
+                            ↩ Reply
+                        </button>
+
+                    {% endif %}
+
+
+                    {% if user.is_authenticated and user == comment.author %}
+
+                        <!-- EDIT -->
+
+                        <a
+                            href="{% url 'edit_comment' comment.id %}"
+                            class="text-xs
+                                   text-gray-500
+                                   hover:text-red-400
+                                   transition"
+                        >
+                            ✏️ Edit
+                        </a>
+
+
+                        <!-- DELETE -->
+
+                        <form
+                            method="POST"
+                            action="{% url 'delete_comment' comment.id %}"
+                            class="inline"
+                            onsubmit="return confirm('Delete this comment?');"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="text-xs
+                                       text-gray-500
+                                       hover:text-red-500
+                                       transition"
+                            >
+                                🗑 Delete
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- REPLY FORM -->
+
+                {% if user.is_authenticated %}
+
+                    <div
+                        id="reply-form-{{ comment.id }}"
+                        class="hidden mt-4 ml-6"
+                    >
+
+                        <form
+                            method="POST"
+                            action="{% url 'add_comment' story.slug %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="parent_id"
+                                value="{{ comment.id }}"
+                            >
+
+                            <textarea
+                                name="body"
+                                rows="3"
+                                required
+                                placeholder="Write a reply..."
+                                class="w-full bg-black/30
+                                       border border-white/10
+                                       rounded-lg p-3
+                                       text-gray-300
+                                       placeholder-gray-700
+                                       focus:outline-none
+                                       focus:border-red-700
+                                       resize-y"
+                            ></textarea>
+
+                            <div class="flex justify-end gap-2 mt-2">
+
+                                <button
+                                    type="button"
+                                    onclick="toggleReply('{{ comment.id }}')"
+                                    class="px-4 py-2
+                                           rounded-lg
+                                           bg-white/5
+                                           border border-white/10
+                                           text-gray-400
+                                           hover:bg-white/10
+                                           text-sm"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    class="px-4 py-2
+                                           rounded-lg
+                                           bg-red-900/50
+                                           border border-red-800/50
+                                           text-red-300
+                                           hover:bg-red-800/60
+                                           text-sm"
+                                >
+                                    Reply
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- REPLIES -->
+
+                {% if comment.replies.all %}
+
+                    <div
+                        class="mt-5 ml-5
+                               pl-5
+                               border-l
+                               border-red-900/40
+                               space-y-4"
+                    >
+
+                        {% for reply in comment.replies.all %}
+
+                            <div
+                                class="bg-black/20
+                                       rounded-lg
+                                       p-4"
+                            >
+
+                                <!-- REPLY HEADER -->
+
+                                <div
+                                    class="flex items-start
+                                           justify-between
+                                           gap-4"
+                                >
+
+                                    <div>
+
+                                        <strong class="text-gray-300 text-sm">
+                                            @{{ reply.author.username }}
+                                        </strong>
+
+                                        <span class="text-gray-700 text-xs ml-2">
+                                            {{ reply.created_at|date:"M d, Y · H:i" }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- REPLY BODY -->
+
+                                <p
+                                    class="text-gray-500
+                                           text-sm
+                                           mt-2
+                                           leading-relaxed"
+                                >
+                                    {{ reply.body }}
+                                </p>
+
+
+                                <!-- REPLY ACTIONS -->
+
+                                {% if user.is_authenticated and user == reply.author %}
+
+                                    <div class="flex items-center gap-4 mt-3">
+
+                                        <!-- EDIT -->
+
+                                        <a
+                                            href="{% url 'edit_comment' reply.id %}"
+                                            class="text-xs
+                                                   text-gray-600
+                                                   hover:text-red-400
+                                                   transition"
+                                        >
+                                            ✏️ Edit
+                                        </a>
+
+
+                                        <!-- DELETE -->
+
+                                        <form
+                                            method="POST"
+                                            action="{% url 'delete_comment' reply.id %}"
+                                            class="inline"
+                                            onsubmit="return confirm('Delete this reply?');"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="text-xs
+                                                       text-gray-600
+                                                       hover:text-red-500
+                                                       transition"
+                                            >
+                                                🗑 Delete
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <div class="py-10 text-center">
+
+                <div class="text-4xl mb-3">
+                    🕯️
+                </div>
+
+                <p class="text-gray-600">
+                    No comments yet.
+                </p>
+
+                <p class="text-gray-700 text-sm mt-1">
+                    Be the first to enter the darkness...
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<script>
+
+function toggleReply(commentId) {
+
+    const form =
+        document.getElementById(
+            "reply-form-" + commentId
+        );
+
+    if (!form) {
+        return;
+    }
+
+    form.classList.toggle("hidden");
+
+}
+
+</script>
+
+
+<!-- ========================================= -->
+<!-- HORROR MODE DATA -->
+<!-- ========================================= -->
+
+{% if story.horror_mode %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const horrorButton =
+        document.getElementById("horrorModeButton");
+
+    const normalStory =
+        document.getElementById("normalStory");
+
+    const horrorReader =
+        document.getElementById("horrorReader");
+
+    const audioPermission =
+        document.getElementById("audioPermission");
+
+    const readerInterface =
+        document.getElementById("readerInterface");
+
+    const enableSound =
+        document.getElementById("enableSound");
+
+    const horrorText =
+        document.getElementById("horrorText");
+
+    const sceneImage =
+        document.getElementById("sceneImage");
+
+    const scenePlaceholder =
+        document.getElementById("scenePlaceholder");
+
+    const nextWord =
+        document.getElementById("nextWord");
+
+    const previousWord =
+        document.getElementById("previousWord");
+
+    const wordCounter =
+        document.getElementById("wordCounter");
+
+    const readerProgress =
+        document.getElementById("readerProgress");
+
+    const readerStatus =
+        document.getElementById("readerStatus");
+
+
+    const scenes = [
+
+        {% for scene in scenes %}
+
+        {
+            text: "{{ scene.text|default:""|striptags|escapejs }}",
+            image: "{% if scene.image %}{{ scene.image.url }}{% endif %}",
+            audio: "{% if scene.audio %}{{ scene.audio.url }}{% endif %}",
+            jumpscare: {{ scene.is_jumpscare|yesno:"true,false" }},
+            jumpscareImage:
+                "{% if scene.jumpscare_image %}{{ scene.jumpscare_image.url }}{% endif %}",
+            jumpscareAudio:
+                "{% if scene.jumpscare_audio %}{{ scene.jumpscare_audio.url }}{% endif %}"
+        },
+
+        {% endfor %}
+
+    ];
+
+
+    let currentScene = 0;
+    let soundEnabled = false;
+
+
+    function showScene(index) {
+
+        if (!scenes.length) {
+            horrorText.textContent =
+                "No horror scenes have been created yet.";
+
+            return;
+        }
+
+        if (index < 0 || index >= scenes.length) {
+            return;
+        }
+
+
+        currentScene = index;
+
+        const scene = scenes[currentScene];
+
+
+        /* TEXT */
+
+        horrorText.textContent =
+            scene.text || "";
+
+
+        /* IMAGE */
+
+        if (scene.image) {
+
+            sceneImage.src = scene.image;
+
+            sceneImage.classList.remove("hidden");
+
+            scenePlaceholder.classList.add("hidden");
+
+        } else {
+
+            sceneImage.classList.add("hidden");
+
+            scenePlaceholder.classList.remove("hidden");
+
+        }
+
+
+        /* COUNTER */
+
+        wordCounter.textContent =
+            `Scene ${currentScene + 1} / ${scenes.length}`;
+
+
+        readerProgress.style.width =
+            `${((currentScene + 1) / scenes.length) * 100}%`;
+
+
+        previousWord.disabled =
+            currentScene === 0;
+
+
+        nextWord.disabled =
+            currentScene === scenes.length - 1;
+
+
+        readerStatus.textContent =
+            "Use ← / → to continue";
+
+
+        /* NORMAL SCENE AUDIO */
+
+        if (soundEnabled && scene.audio) {
+
+            const audio =
+                new Audio(scene.audio);
+
+            audio.play().catch(() => {});
+
+        }
+
+
+        /* JUMPSCARE */
+
+        if (scene.jumpscare) {
+
+            triggerJumpscare(scene);
+
+        }
+
+    }
+
+
+ function triggerJumpscare(scene) {
+
+    const overlay = document.createElement("div");
+
+    overlay.className =
+        "fixed inset-0 z-[99999] bg-black flex items-center justify-center";
+
+    overlay.style.opacity = "1";
+    overlay.style.animation = "jumpscareFlash 0.4s steps(2, end)";
+
+
+    if (scene.jumpscareImage) {
+
+        const image = document.createElement("img");
+
+        image.src = scene.jumpscareImage;
+
+        image.className =
+            "w-screen h-screen object-cover";
+
+        image.style.animation =
+            "jumpscareShake 0.4s linear";
+
+        overlay.appendChild(image);
+    }
+
+
+    document.body.appendChild(overlay);
+
+
+    if (
+        soundEnabled &&
+        scene.jumpscareAudio
+    ) {
+
+        const audio =
+            new Audio(scene.jumpscareAudio);
+
+        audio.volume = 1;
+
+        audio.currentTime = 0;
+
+        audio.play().catch(() => {});
+    }
+
+
+    /*
+     * Remove after 400ms.
+     * Less than 0.5 seconds.
+     */
+
+    setTimeout(function () {
+
+        overlay.remove();
+
+    }, 400);
+
+}
+
+    /* HORROR MODE BUTTON */
+
+    if (horrorButton) {
+
+        horrorButton.addEventListener(
+            "click",
+            function () {
+
+                horrorButton.textContent =
+                    "🩸 Horror Mode: ON";
+
+                normalStory.classList.add("hidden");
+
+                horrorReader.classList.remove("hidden");
+
+                audioPermission.classList.remove("hidden");
+
+            }
+        );
+
+    }
+
+
+    /* SOUND PERMISSION */
+
+    if (enableSound) {
+
+        enableSound.addEventListener(
+            "click",
+            function () {
+
+                const audio =
+                    new Audio();
+
+                audio.play().catch(() => {});
+
+                soundEnabled = true;
+
+                audioPermission.classList.add("hidden");
+
+                readerInterface.classList.remove("hidden");
+
+                showScene(0);
+
+            }
+        );
+
+    }
+
+
+    /* NEXT */
+
+    if (nextWord) {
+
+        nextWord.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    currentScene <
+                    scenes.length - 1
+                ) {
+
+                    showScene(currentScene + 1);
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* PREVIOUS */
+
+    if (previousWord) {
+
+        previousWord.addEventListener(
+            "click",
+            function () {
+
+                if (currentScene > 0) {
+
+                    showScene(currentScene - 1);
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ARROW KEYS */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                !readerInterface ||
+                readerInterface.classList.contains("hidden")
+            ) {
+                return;
+            }
+
+
+            if (event.key === "ArrowRight") {
+
+                if (
+                    currentScene <
+                    scenes.length - 1
+                ) {
+
+                    showScene(currentScene + 1);
+
+                }
+
+            }
+
+
+            if (event.key === "ArrowLeft") {
+
+                if (currentScene > 0) {
+
+                    showScene(currentScene - 1);
+
+                }
+
+            }
+
+        }
+    );
+
+});
+</script>
+
+<style>
+
+/* ================================= */
+/* JUMPSCARE */
+/* ================================= */
+
+@keyframes jumpscareShake {
+
+    0% {
+        transform: scale(1.12) translate(0, 0);
+    }
+
+    15% {
+        transform: scale(1.18) translate(-14px, 8px);
+    }
+
+    30% {
+        transform: scale(1.22) translate(14px, -8px);
+    }
+
+    45% {
+        transform: scale(1.18) translate(-10px, -10px);
+    }
+
+    60% {
+        transform: scale(1.24) translate(10px, 10px);
+    }
+
+    75% {
+        transform: scale(1.19) translate(-6px, 4px);
+    }
+
+    100% {
+        transform: scale(1.12) translate(0, 0);
+    }
+}
+
+
+@keyframes jumpscareFlash {
+
+    0% {
+        background: #000;
+        opacity: 0;
+    }
+
+    8% {
+        opacity: 1;
+    }
+
+    20% {
+        background: #fff;
+    }
+
+    28% {
+        background: #000;
+    }
+
+    45% {
+        background: #7f0000;
+    }
+
+    60% {
+        background: #000;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+#jumpscareOverlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    background: black;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.jumpscare-screen {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.jumpscare-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+}
+
+
+/* ================================= */
+/* HORROR TEXT */
+/* ================================= */
+
+#horrorText {
+
+    min-height: 250px;
+
+    white-space: normal;
+
+}
+
+
+/* ================================= */
+/* IMAGE */
+/* ================================= */
+
+#sceneImage {
+
+    min-height: 400px;
+
+    max-height: 600px;
+
+}
+
+
+/* ================================= */
+/* MOBILE */
+/* ================================= */
+
+@media (max-width: 768px) {
+
+    #sceneImage {
+
+        min-height: 250px;
+
+    }
+
+}
+
+</style>
+
+{% endif %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const copyButton = document.getElementById("copyLinkButton");
+    const copyMessage = document.getElementById("copyMessage");
+
+    if (copyButton) {
+
+        copyButton.addEventListener("click", async function () {
+
+            try {
+
+                await navigator.clipboard.writeText(
+                    window.location.href
+                );
+
+                copyMessage.classList.remove("hidden");
+
+                setTimeout(function () {
+                    copyMessage.classList.add("hidden");
+                }, 2000);
+
+            } catch (error) {
+
+                const textarea = document.createElement("textarea");
+
+                textarea.value = window.location.href;
+
+                document.body.appendChild(textarea);
+
+                textarea.select();
+
+                document.execCommand("copy");
+
+                textarea.remove();
+
+                copyMessage.classList.remove("hidden");
+
+                setTimeout(function () {
+                    copyMessage.classList.add("hidden");
+                }, 2000);
+            }
+
+        });
+
+    }
+
+});
+</script>
 
 {% endblock %}
