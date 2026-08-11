@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Notifications | ShadowRealm
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-4xl mx-auto">
+
+    <div class="glass-panel p-6 mb-6">
+
+        <h1 class="text-3xl font-bold text-white">
+            🔔 Notifications
+        </h1>
+
+        <p class="text-gray-500 mt-1">
+            Things happening around your stories.
+        </p>
+
+    </div>
+
+
+    {% if notifications %}
+
+        <div class="space-y-3">
+
+            {% for notification in notifications %}
+
+                <a
+                    {% if notification.story %}
+                        href="{% url 'story_detail' notification.story.slug %}"
+                    {% else %}
+                        href="{% url 'notifications' %}"
+                    {% endif %}
+
+                    class="block glass-panel p-5
+                           hover:border-red-900/50
+                           transition"
+                >
+
+                    <div class="flex items-start gap-4">
+
+                        <!-- Avatar -->
+
+                        <div class="w-10 h-10 rounded-full
+                                    bg-red-950
+                                    border border-red-900
+                                    flex items-center justify-center
+                                    flex-shrink-0">
+
+                            👤
+
+                        </div>
+
+
+                        <!-- Notification -->
+
+                        <div class="flex-grow">
+
+                            <p class="text-gray-300">
+
+                                {{ notification.message }}
+
+                            </p>
+
+                            <p class="text-xs text-gray-600 mt-2">
+
+                                {{ notification.created_at|date:"M d, Y · H:i" }}
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- Unread indicator -->
+
+                        {% if not notification.is_read %}
+
+                            <span
+                                class="w-2 h-2
+                                       bg-red-500
+                                       rounded-full
+                                       mt-2
+                                       flex-shrink-0">
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="glass-panel p-10 text-center">
+
+            <div class="text-4xl mb-4">
+                🕯️
+            </div>
+
+            <h2 class="text-lg font-semibold text-gray-300">
+                No notifications yet
+            </h2>
+
+            <p class="text-gray-600 text-sm mt-2">
+                The darkness is quiet... for now.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

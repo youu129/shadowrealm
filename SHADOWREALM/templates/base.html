@@ -226,83 +226,215 @@
     </div>
 
     <!-- EVERYTHING ELSE GOES HERE -->
-    <!-- Navigation Bar -->
+    <!-- NAVIGATION BAR -->
     <nav class="navbar-glass sticky top-0 z-50">
-        <div class="navbar-content">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                
-                <!-- Brand / Logo -->
-                <div class="flex items-center space-x-3">
-                    <a href="{% url 'home' %}" class="flex items-center space-x-2 group">
-                        <span class="text-2xl">🕷️</span>
-                        <span class="text-xl font-black tracking-widest text-red-600 group-hover:text-red-500 uppercase">
-                            Shadow<span class="text-gray-100">Realm</span>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="h-20 flex items-center justify-between relative">
+
+                <!-- ================================================= -->
+                <!-- LEFT : LOGO -->
+                <!-- ================================================= -->
+
+                <div class="flex-shrink-0">
+
+                    <a href="{% url 'home' %}"
+                    class="flex items-center gap-2 group">
+
+                        <span class="text-2xl">
+                            🕷️
                         </span>
+
+                        <span class="text-xl font-black tracking-widest
+                                    text-red-600 group-hover:text-red-500
+                                    uppercase transition">
+
+                            Shadow<span class="text-gray-100">Realm</span>
+
+                        </span>
+
                     </a>
+
                 </div>
 
-                <!-- Navigation Links -->
-                <div class="flex items-center space-x-4 sm:space-x-6">
-                    <a href="{% url 'home' %}" class="text-sm font-medium text-gray-300 hover:text-red-500 transition-colors">
+
+                <!-- ================================================= -->
+                <!-- CENTER : MAIN NAVIGATION -->
+                <!-- ================================================= -->
+
+                <div class="absolute left-1/2 transform -translate-x-1/2
+                            flex items-center gap-3">
+
+                    <!-- EXPLORE -->
+
+                    <a href="{% url 'home' %}"
+                    class="px-4 py-2 rounded-lg
+                            text-sm font-medium
+                            text-gray-300
+                            hover:text-white
+                            hover:bg-white/5
+                            transition">
+
                         Explore
+
                     </a>
+
+
+                    <!-- TRENDING -->
+
+                    <a href="{% url 'trending' %}"
+                    class="px-4 py-2 rounded-lg
+                            text-sm font-medium
+                            text-gray-300
+                            hover:text-red-400
+                            hover:bg-white/5
+                            transition">
+
+                        🔥 Trending
+
+                    </a>
+
+
                     {% if user.is_authenticated %}
 
-                        <!-- Write Story -->
+                        <!-- CREATE STORY -->
+
                         <a href="{% url 'create_story' %}"
-                        class="bg-realm-red hover:bg-realm-redHover
-                                text-white text-sm font-semibold
-                                px-4 py-2 rounded-md
-                                transition-all border border-red-900
-                                shadow-lg shadow-red-950/50">
-                            + Write Story
-                        </a>
+                        class="px-4 py-2 rounded-lg
+                                bg-red-900/30
+                                border border-red-800/50
+                                text-red-400
+                                text-sm font-semibold
+                                hover:bg-red-900/50
+                                hover:text-red-300
+                                transition">
 
-                        <!-- Profile -->
-                        <a href="{% url 'profile' %}"
-                        class="text-sm font-medium text-gray-300
-                                hover:text-red-500 transition-colors">
-                            Profile
-                        </a>
+                            ✍️ Create Story
 
-                        <!-- Username + Logout -->
-                        <div class="flex items-center space-x-3
-                                    border-l border-realm-border pl-4">
-
-                            <span class="text-xs font-mono text-gray-400 hidden sm:inline">
-                                @{{ user.username }}
-                            </span>
-
-                            <a href="{% url 'logout' %}"
-                            class="text-xs font-semibold text-gray-400
-                                    hover:text-red-400 transition-colors">
-                                Logout
-                            </a>
-
-                        </div>
-
-                    {% else %}
-
-                        <!-- Sign In -->
-                        <a href="{% url 'login' %}"
-                        class="text-sm font-medium text-gray-300
-                                hover:text-red-500 transition-colors">
-                            Sign In
-                        </a>
-
-                        <!-- Register -->
-                        <a href="{% url 'register' %}"
-                        class="bg-realm-red hover:bg-realm-redHover
-                                text-white text-sm font-semibold
-                                px-4 py-2 rounded-md
-                                transition-all border border-red-900">
-                            Join Community
                         </a>
 
                     {% endif %}
+
                 </div>
+
+
+                <!-- ================================================= -->
+                <!-- RIGHT : USER AREA -->
+                <!-- ================================================= -->
+
+                <div class="flex items-center gap-3 ml-auto">
+
+
+                    {% if user.is_authenticated %}
+
+                        <!-- ========================================= -->
+                        <!-- NOTIFICATION -->
+                        <!-- ========================================= -->
+
+                        <!-- NOTIFICATIONS -->
+                        <a href="{% url 'notifications' %}"
+                        class="relative text-xl text-gray-300
+                                hover:text-red-500 transition-colors">
+
+                            🔔
+
+                            {% if unread_notifications > 0 %}
+                                <span
+                                    class="absolute -top-2 -right-2
+                                        min-w-[18px] h-[18px]
+                                        px-1
+                                        flex items-center justify-center
+                                        rounded-full
+                                        bg-red-600
+                                        text-white
+                                        text-[10px]
+                                        font-bold
+                                        border border-red-400">
+
+                                    {{ unread_notifications }}
+
+                                </span>
+                            {% endif %}
+
+                        </a>
+
+
+                        <!-- ========================================= -->
+                        <!-- USERNAME → PROFILE -->
+                        <!-- ========================================= -->
+
+                        <a href="{% url 'profile' %}"
+                        class="text-sm font-mono
+                                text-gray-300
+                                hover:text-red-400
+                                transition">
+
+                            @{{ user.username }}
+
+                        </a>
+
+
+                        <!-- ========================================= -->
+                        <!-- LOGOUT -->
+                        <!-- ========================================= -->
+
+                        <a href="{% url 'logout' %}"
+                        class="px-4 py-2 rounded-lg
+                                bg-red-900/30
+                                border border-red-800/50
+                                text-red-400
+                                text-sm font-semibold
+                                backdrop-blur-md
+                                hover:bg-red-900/60
+                                hover:border-red-700
+                                hover:text-red-300
+                                transition">
+
+                            Logout
+
+                        </a>
+
+
+                    {% else %}
+
+                        <!-- SIGN IN -->
+
+                        <a href="{% url 'login' %}"
+                        class="px-4 py-2
+                                text-sm font-medium
+                                text-gray-300
+                                hover:text-red-400
+                                transition">
+
+                            Sign In
+
+                        </a>
+
+
+                        <!-- REGISTER -->
+
+                        <a href="{% url 'register' %}"
+                        class="px-4 py-2 rounded-lg
+                                bg-red-900/30
+                                border border-red-800/50
+                                text-red-400
+                                text-sm font-semibold
+                                hover:bg-red-900/50
+                                transition">
+
+                            Join Community
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
             </div>
+
         </div>
+
     </nav>
 
     <!-- Main Content Container -->

@@ -70,4 +70,58 @@ urlpatterns = [
         views.profile,
         name='profile'
     ),
+
+    path(
+    'notifications/',
+    views.notifications,
+    name='notifications'
+    ),
+
+    path(
+    'trending/',
+    views.trending,
+    name='trending'
+    ),
+
+    path(
+    'story/<int:story_id>/edit/',
+    views.edit_story,
+    name='edit_story'
+    ),
+
+    path(
+    'comment/<int:comment_id>/edit/',
+    views.edit_comment,
+    name='edit_comment'
+    ),
+
+    path(
+    'comment/<int:comment_id>/delete/',
+    views.delete_comment,
+    name='delete_comment'
+    ),
+
+    path(
+    'story/<int:story_id>/scenes/',
+    views.manage_scenes,
+    name='manage_scenes'
+    ),
+
+    path(
+    'story/<slug:slug>/horror/',
+    views.horror_reader,
+    name='horror_reader'
+    ),
+
+    path(
+    'scene/<int:scene_id>/edit/',
+    views.edit_scene,
+    name='edit_scene'
+    ),
+
+    path(
+    'scene/<int:scene_id>/delete/',
+    views.delete_scene,
+    name='delete_scene'
+    ),
 ]
