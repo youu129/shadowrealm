@@ -124,4 +124,34 @@ urlpatterns = [
     views.delete_scene,
     name='delete_scene'
     ),
+
+    path(
+    'story/<int:story_id>/report/',
+    views.report_story,
+    name='report_story'
+    ),
+
+    path(
+    'comment/<int:comment_id>/report/',
+    views.report_comment,
+    name='report_comment'
+    ),
+
+    path(
+    'notifications/<int:notification_id>/read/',
+    views.mark_notification_read,
+    name='mark_notification_read'
+    ),
+
+    path(
+    'notifications/mark-all-read/',
+    views.mark_all_notifications_read,
+    name='mark_all_notifications_read'
+    ),
+
+    path(
+    'account/delete/',
+    views.delete_account,
+    name='delete_account'
+    ),
 ]

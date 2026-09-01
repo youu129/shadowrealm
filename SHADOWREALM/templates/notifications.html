@@ -1,22 +1,56 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Notifications | ShadowRealm
+Notifications | ShadowRealm
 {% endblock %}
 
 {% block content %}
 
 <div class="max-w-4xl mx-auto">
 
-    <div class="glass-panel p-6 mb-6">
+    <div class="glass-panel p-5 sm:p-6 mb-6">
 
-        <h1 class="text-3xl font-bold text-white">
-            🔔 Notifications
-        </h1>
+        <div class="flex flex-col sm:flex-row
+                    sm:items-center sm:justify-between
+                    gap-4">
 
-        <p class="text-gray-500 mt-1">
-            Things happening around your stories.
-        </p>
+            <div>
+
+                <h1 class="text-2xl sm:text-3xl
+                           font-bold text-white">
+                    🔔 Notifications
+                </h1>
+
+                <p class="text-gray-500 mt-1">
+                    Things happening around your stories.
+                </p>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{% url 'mark_all_notifications_read' %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="w-full sm:w-auto
+                           px-4 py-2 rounded-lg
+                           bg-white/5
+                           border border-white/10
+                           text-gray-300
+                           hover:bg-white/10
+                           text-sm transition"
+                >
+                    ✓ Mark all as read
+                </button>
+
+            </form>
+
+        </div>
 
     </div>
 
@@ -28,62 +62,52 @@
             {% for notification in notifications %}
 
                 <a
-                    {% if notification.story %}
-                        href="{% url 'story_detail' notification.story.slug %}"
-                    {% else %}
-                        href="{% url 'notifications' %}"
-                    {% endif %}
-
-                    class="block glass-panel p-5
+                    href="{% url 'mark_notification_read' notification.id %}"
+                    class="block glass-panel
+                           p-4 sm:p-5
                            hover:border-red-900/50
-                           transition"
+                           transition
+                           {% if not notification.is_read %}
+                               border-red-900/40
+                           {% endif %}"
                 >
 
-                    <div class="flex items-start gap-4">
+                    <div class="flex items-start gap-3 sm:gap-4">
 
-                        <!-- Avatar -->
-
-                        <div class="w-10 h-10 rounded-full
-                                    bg-red-950
-                                    border border-red-900
-                                    flex items-center justify-center
-                                    flex-shrink-0">
-
+                        <div
+                            class="w-10 h-10
+                                   rounded-full
+                                   bg-red-950
+                                   border border-red-900
+                                   flex items-center justify-center
+                                   flex-shrink-0"
+                        >
                             👤
-
                         </div>
 
 
-                        <!-- Notification -->
+                        <div class="min-w-0 flex-1">
 
-                        <div class="flex-grow">
-
-                            <p class="text-gray-300">
-
+                            <p class="text-gray-300 text-sm sm:text-base">
                                 {{ notification.message }}
-
                             </p>
 
                             <p class="text-xs text-gray-600 mt-2">
-
                                 {{ notification.created_at|date:"M d, Y · H:i" }}
-
                             </p>
 
                         </div>
 
-
-                        <!-- Unread indicator -->
 
                         {% if not notification.is_read %}
 
                             <span
-                                class="w-2 h-2
+                                class="w-2.5 h-2.5
                                        bg-red-500
                                        rounded-full
-                                       mt-2
-                                       flex-shrink-0">
-                            </span>
+                                       flex-shrink-0
+                                       mt-2"
+                            ></span>
 
                         {% endif %}
 
