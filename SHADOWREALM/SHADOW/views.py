@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .models import Category, Story, Comment, Notification, StoryScene
+from .models import Category, Story, Comment, Notification, StoryScene, Report
 from .forms import StoryForm, StorySceneForm, StorySceneFormSet
 
 
@@ -418,6 +418,13 @@ def story_detail(request, slug):
 
     scenes = story.scenes.all()
 
+    is_favorited = False
+
+    if request.user.is_authenticated:
+        is_favorited = story.favorites.filter(
+            id=request.user.id
+        ).exists()
+        
     return render(
         request,
         'story_detail.html',
@@ -425,6 +432,7 @@ def story_detail(request, slug):
             'story': story,
             'comments': comments,
             'scenes': scenes,
+            'is_favorited': is_favorited,
         }
     )
 
@@ -489,13 +497,10 @@ def notifications(request):
 
     notifications = Notification.objects.filter(
         recipient=request.user
-    )
-
-    Notification.objects.filter(
-        recipient=request.user,
-        is_read=False
-    ).update(
-        is_read=True
+    ).select_related(
+        'sender',
+        'story',
+        'comment'
     )
 
     return render(
@@ -506,6 +511,47 @@ def notifications(request):
         }
     )
 
+
+@login_required
+def mark_notification_read(request, notification_id):
+
+    notification = get_object_or_404(
+        Notification,
+        id=notification_id,
+        recipient=request.user
+    )
+
+    notification.is_read = True
+    notification.save(update_fields=['is_read'])
+
+    if notification.story:
+        return redirect(
+            'story_detail',
+            slug=notification.story.slug
+        )
+
+    if notification.comment:
+        return redirect(
+            'story_detail',
+            slug=notification.comment.story.slug
+        )
+
+    return redirect('notifications')
+
+
+@login_required
+def mark_all_notifications_read(request):
+
+    if request.method == 'POST':
+
+        Notification.objects.filter(
+            recipient=request.user,
+            is_read=False
+        ).update(
+            is_read=True
+        )
+
+    return redirect('notifications')
 
 @login_required
 def manage_scenes(request, story_id):
@@ -646,4 +692,94 @@ def horror_reader(request, slug):
             'story': story,
             'scenes': scenes,
         }
+    )
+
+@login_required
+def report_story(request, story_id):
+
+    story = get_object_or_404(
+        Story,
+        id=story_id,
+        status='published'
+    )
+
+    if request.method == 'POST':
+
+        reason = request.POST.get('reason')
+        description = request.POST.get('description', '').strip()
+
+        if reason:
+
+            Report.objects.create(
+                reporter=request.user,
+                story=story,
+                reason=reason,
+                description=description
+            )
+
+            messages.success(
+                request,
+                'Thank you. The story has been reported to the administrators.'
+            )
+
+    return redirect(
+        'story_detail',
+        slug=story.slug
+    )
+
+
+@login_required
+def report_comment(request, comment_id):
+
+    comment = get_object_or_404(
+        Comment,
+        id=comment_id
+    )
+
+    if request.method == 'POST':
+
+        reason = request.POST.get('reason')
+        description = request.POST.get('description', '').strip()
+
+        if reason:
+
+            Report.objects.create(
+                reporter=request.user,
+                comment=comment,
+                reason=reason,
+                description=description
+            )
+
+            messages.success(
+                request,
+                'Thank you. The comment has been reported to the administrators.'
+            )
+
+    return redirect(
+        'story_detail',
+        slug=comment.story.slug
+    )
+
+@login_required
+def delete_account(request):
+
+    if request.method == 'POST':
+
+        user = request.user
+
+        # Delete the currently logged-in user's account.
+        # No user ID/username comes from the URL, so another
+        # user's account cannot be targeted by changing the URL.
+        user.delete()
+
+        messages.success(
+            request,
+            'Your ShadowRealm account has been permanently deleted.'
+        )
+
+        return redirect('home')
+
+    return render(
+        request,
+        'delete_account.html'
     )

@@ -172,4 +172,76 @@ class Notification(models.Model):
     def __str__(self):
         return f"{self.recipient.username} - {self.notification_type}"
     
-    
+
+class Report(models.Model):
+
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('reviewed', 'Reviewed'),
+        ('dismissed', 'Dismissed'),
+        ('removed', 'Removed'),
+    )
+
+    REPORT_REASON_CHOICES = (
+        ('spam', 'Spam'),
+        ('harassment', 'Harassment'),
+        ('hate', 'Hate Speech'),
+        ('sexual', 'Sexual Content'),
+        ('violence', 'Violence'),
+        ('copyright', 'Copyright'),
+        ('other', 'Other'),
+    )
+
+    reporter = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='submitted_reports'
+    )
+
+    story = models.ForeignKey(
+        Story,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='reports'
+    )
+
+    comment = models.ForeignKey(
+        Comment,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='reports'
+    )
+
+    reason = models.CharField(
+        max_length=30,
+        choices=REPORT_REASON_CHOICES
+    )
+
+    description = models.TextField(
+        blank=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        if self.story:
+            target = f'Story: {self.story.title}'
+        elif self.comment:
+            target = f'Comment #{self.comment.id}'
+        else:
+            target = 'Unknown'
+
+        return f'{target} reported by {self.reporter.username}'

@@ -226,217 +226,395 @@
     </div>
 
     <!-- EVERYTHING ELSE GOES HERE -->
-    <!-- NAVIGATION BAR -->
-    <nav class="navbar-glass sticky top-0 z-50">
+<!-- NAVIGATION BAR -->
+<nav class="navbar-glass sticky top-0 z-50">
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div class="h-20 flex items-center justify-between relative">
+        <div class="min-h-20 flex items-center justify-between relative">
 
-                <!-- ================================================= -->
-                <!-- LEFT : LOGO -->
-                <!-- ================================================= -->
+            <!-- LOGO -->
 
-                <div class="flex-shrink-0">
+            <div class="flex-shrink-0">
 
-                    <a href="{% url 'home' %}"
-                    class="flex items-center gap-2 group">
+                <a
+                    href="{% url 'home' %}"
+                    class="flex items-center gap-2 group"
+                >
 
-                        <span class="text-2xl">
-                            🕷️
-                        </span>
+                    <span class="text-2xl">
+                        🕷️
+                    </span>
 
-                        <span class="text-xl font-black tracking-widest
-                                    text-red-600 group-hover:text-red-500
-                                    uppercase transition">
+                    <span
+                        class="text-xl sm:text-2xl font-black
+                               tracking-widest
+                               text-red-600
+                               group-hover:text-red-500
+                               uppercase transition"
+                    >
+                        Shadow<span class="text-gray-100">Realm</span>
+                    </span>
 
-                            Shadow<span class="text-gray-100">Realm</span>
+                </a>
 
-                        </span>
-
-                    </a>
-
-                </div>
+            </div>
 
 
-                <!-- ================================================= -->
-                <!-- CENTER : MAIN NAVIGATION -->
-                <!-- ================================================= -->
+            <!-- DESKTOP NAVIGATION -->
 
-                <div class="absolute left-1/2 transform -translate-x-1/2
-                            flex items-center gap-3">
+            <div
+                class="hidden md:flex
+                       absolute left-1/2
+                       transform -translate-x-1/2
+                       items-center gap-3"
+            >
 
-                    <!-- EXPLORE -->
-
-                    <a href="{% url 'home' %}"
+                <a
+                    href="{% url 'home' %}"
                     class="px-4 py-2 rounded-lg
-                            text-sm font-medium
-                            text-gray-300
-                            hover:text-white
-                            hover:bg-white/5
-                            transition">
+                           text-sm font-medium
+                           text-gray-300
+                           hover:text-white
+                           hover:bg-white/5
+                           transition"
+                >
+                    Explore
+                </a>
 
-                        Explore
 
-                    </a>
-
-
-                    <!-- TRENDING -->
-
-                    <a href="{% url 'trending' %}"
+                <a
+                    href="{% url 'trending' %}"
                     class="px-4 py-2 rounded-lg
-                            text-sm font-medium
-                            text-gray-300
-                            hover:text-red-400
-                            hover:bg-white/5
-                            transition">
+                           text-sm font-medium
+                           text-gray-300
+                           hover:text-red-400
+                           hover:bg-white/5
+                           transition"
+                >
+                    🔥 Trending
+                </a>
 
-                        🔥 Trending
 
-                    </a>
+                {% if user.is_authenticated %}
 
-
-                    {% if user.is_authenticated %}
-
-                        <!-- CREATE STORY -->
-
-                        <a href="{% url 'create_story' %}"
+                    <a
+                        href="{% url 'create_story' %}"
                         class="px-4 py-2 rounded-lg
-                                bg-red-900/30
-                                border border-red-800/50
-                                text-red-400
-                                text-sm font-semibold
-                                hover:bg-red-900/50
-                                hover:text-red-300
-                                transition">
+                               bg-red-900/30
+                               border border-red-800/50
+                               text-red-400
+                               text-sm font-semibold
+                               hover:bg-red-900/50
+                               hover:text-red-300
+                               transition"
+                    >
+                        ✍️ Create Story
+                    </a>
 
-                            ✍️ Create Story
+                {% endif %}
 
-                        </a>
-
-                    {% endif %}
-
-                </div>
-
-
-                <!-- ================================================= -->
-                <!-- RIGHT : USER AREA -->
-                <!-- ================================================= -->
-
-                <div class="flex items-center gap-3 ml-auto">
+            </div>
 
 
-                    {% if user.is_authenticated %}
+            <!-- DESKTOP USER AREA -->
 
-                        <!-- ========================================= -->
-                        <!-- NOTIFICATION -->
-                        <!-- ========================================= -->
+            <div
+                class="hidden md:flex
+                       items-center gap-3
+                       ml-auto"
+            >
 
-                        <!-- NOTIFICATIONS -->
-                        <a href="{% url 'notifications' %}"
-                        class="relative text-xl text-gray-300
-                                hover:text-red-500 transition-colors">
+                {% if user.is_authenticated %}
 
-                            🔔
+                    <!-- NOTIFICATIONS -->
 
-                            {% if unread_notifications > 0 %}
-                                <span
-                                    class="absolute -top-2 -right-2
-                                        min-w-[18px] h-[18px]
-                                        px-1
-                                        flex items-center justify-center
-                                        rounded-full
-                                        bg-red-600
-                                        text-white
-                                        text-[10px]
-                                        font-bold
-                                        border border-red-400">
+                    <a
+                        href="{% url 'notifications' %}"
+                        class="relative text-xl
+                               text-gray-300
+                               hover:text-red-500
+                               transition-colors"
+                    >
 
-                                    {{ unread_notifications }}
+                        🔔
 
-                                </span>
-                            {% endif %}
+                        {% if unread_notifications > 0 %}
 
-                        </a>
+                            <span
+                                class="absolute
+                                    -top-1 -right-1
+                                    w-3 h-3
+                                    rounded-full
+                                    bg-red-600
+                                    border-2 border-black"
+                                aria-label="New notifications"
+                            ></span>
+
+                        {% endif %}
+
+                    </a>
 
 
-                        <!-- ========================================= -->
-                        <!-- USERNAME → PROFILE -->
-                        <!-- ========================================= -->
+                    <!-- PROFILE -->
 
-                        <a href="{% url 'profile' %}"
+                    <a
+                        href="{% url 'profile' %}"
                         class="text-sm font-mono
-                                text-gray-300
-                                hover:text-red-400
-                                transition">
+                               text-gray-300
+                               hover:text-red-400
+                               transition"
+                    >
+                        @{{ user.username }}
+                    </a>
 
-                            @{{ user.username }}
 
-                        </a>
+                    <!-- LOGOUT -->
 
-
-                        <!-- ========================================= -->
-                        <!-- LOGOUT -->
-                        <!-- ========================================= -->
-
-                        <a href="{% url 'logout' %}"
+                    <a
+                        href="{% url 'logout' %}"
                         class="px-4 py-2 rounded-lg
-                                bg-red-900/30
-                                border border-red-800/50
-                                text-red-400
-                                text-sm font-semibold
-                                backdrop-blur-md
-                                hover:bg-red-900/60
-                                hover:border-red-700
-                                hover:text-red-300
-                                transition">
+                               bg-red-900/30
+                               border border-red-800/50
+                               text-red-400
+                               text-sm font-semibold
+                               hover:bg-red-900/60
+                               hover:border-red-700
+                               hover:text-red-300
+                               transition"
+                    >
+                        Logout
+                    </a>
 
-                            Logout
+                {% else %}
 
-                        </a>
-
-
-                    {% else %}
-
-                        <!-- SIGN IN -->
-
-                        <a href="{% url 'login' %}"
+                    <a
+                        href="{% url 'login' %}"
                         class="px-4 py-2
-                                text-sm font-medium
-                                text-gray-300
-                                hover:text-red-400
-                                transition">
+                               text-sm font-medium
+                               text-gray-300
+                               hover:text-red-400
+                               transition"
+                    >
+                        Sign In
+                    </a>
 
-                            Sign In
 
-                        </a>
-
-
-                        <!-- REGISTER -->
-
-                        <a href="{% url 'register' %}"
+                    <a
+                        href="{% url 'register' %}"
                         class="px-4 py-2 rounded-lg
-                                bg-red-900/30
-                                border border-red-800/50
-                                text-red-400
-                                text-sm font-semibold
-                                hover:bg-red-900/50
-                                transition">
+                               bg-red-900/30
+                               border border-red-800/50
+                               text-red-400
+                               text-sm font-semibold
+                               hover:bg-red-900/50
+                               transition"
+                    >
+                        Join Community
+                    </a>
 
-                            Join Community
+                {% endif %}
 
-                        </a>
+            </div>
 
-                    {% endif %}
 
-                </div>
+            <!-- MOBILE MENU BUTTON -->
+
+            <button
+                type="button"
+                id="mobileMenuButton"
+                class="md:hidden
+                       p-2
+                       rounded-lg
+                       text-gray-300
+                       hover:text-white
+                       hover:bg-white/10
+                       transition"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+
+                <svg
+                    id="mobileMenuIcon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16"
+                    />
+                </svg>
+
+            </button>
+
+        </div>
+
+
+        <!-- MOBILE MENU -->
+
+        <div
+            id="mobileMenu"
+            class="hidden md:hidden
+                   border-t border-white/10
+                   py-4"
+        >
+
+            <div class="space-y-2">
+
+                <!-- EXPLORE -->
+
+                <a
+                    href="{% url 'home' %}"
+                    class="block px-4 py-3 rounded-lg
+                           text-gray-300
+                           hover:text-white
+                           hover:bg-white/5
+                           transition"
+                >
+                    🏠 Explore
+                </a>
+
+
+                <!-- TRENDING -->
+
+                <a
+                    href="{% url 'trending' %}"
+                    class="block px-4 py-3 rounded-lg
+                           text-gray-300
+                           hover:text-red-400
+                           hover:bg-white/5
+                           transition"
+                >
+                    🔥 Trending
+                </a>
+
+
+                {% if user.is_authenticated %}
+
+                    <!-- CREATE -->
+
+                    <a
+                        href="{% url 'create_story' %}"
+                        class="block px-4 py-3 rounded-lg
+                               bg-red-900/30
+                               border border-red-800/50
+                               text-red-400
+                               font-semibold
+                               transition"
+                    >
+                        ✍️ Create Story
+                    </a>
+
+
+                    <!-- PROFILE -->
+
+                    <a
+                        href="{% url 'profile' %}"
+                        class="block px-4 py-3 rounded-lg
+                               text-gray-300
+                               hover:text-red-400
+                               hover:bg-white/5
+                               transition"
+                    >
+                        👤 @{{ user.username }}
+                    </a>
+
+
+                    <!-- NOTIFICATIONS -->
+
+                    <a
+                        href="{% url 'notifications' %}"
+                        class="flex items-center
+                               justify-between
+                               px-4 py-3
+                               rounded-lg
+                               text-gray-300
+                               hover:text-red-400
+                               hover:bg-white/5
+                               transition"
+                    >
+
+                        <span>
+                            🔔 Notifications
+                        </span>
+
+                        {% if unread_notifications > 0 %}
+
+                            <span
+                                class="min-w-[22px] h-[22px]
+                                       px-1.5
+                                       flex items-center
+                                       justify-center
+                                       rounded-full
+                                       bg-red-600
+                                       text-white
+                                       text-xs
+                                       font-bold"
+                            >
+                                {{ unread_notifications }}
+                            </span>
+
+                        {% endif %}
+
+                    </a>
+
+
+                    <!-- LOGOUT -->
+
+                    <a
+                        href="{% url 'logout' %}"
+                        class="block px-4 py-3 rounded-lg
+                               text-red-400
+                               hover:bg-red-950/30
+                               transition"
+                    >
+                        🚪 Logout
+                    </a>
+
+                {% else %}
+
+                    <!-- LOGIN -->
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="block px-4 py-3 rounded-lg
+                               text-gray-300
+                               hover:text-red-400
+                               hover:bg-white/5
+                               transition"
+                    >
+                        🔐 Sign In
+                    </a>
+
+
+                    <!-- REGISTER -->
+
+                    <a
+                        href="{% url 'register' %}"
+                        class="block px-4 py-3 rounded-lg
+                               bg-red-900/30
+                               border border-red-800/50
+                               text-red-400
+                               font-semibold
+                               transition"
+                    >
+                        🕷️ Join Community
+                    </a>
+
+                {% endif %}
 
             </div>
 
         </div>
 
-    </nav>
+    </div>
 
+</nav>
     <!-- Main Content Container -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Django Messages Banner -->
@@ -463,6 +641,118 @@
             </p>
         </div>
     </footer>
+
+<!--mobile/desktop navbar-->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const mobileMenuButton =
+        document.getElementById("mobileMenuButton");
+
+    const mobileMenu =
+        document.getElementById("mobileMenu");
+
+    const mobileMenuIcon =
+        document.getElementById("mobileMenuIcon");
+
+
+    if (
+        !mobileMenuButton ||
+        !mobileMenu ||
+        !mobileMenuIcon
+    ) {
+        return;
+    }
+
+
+    mobileMenuButton.addEventListener(
+        "click",
+        function () {
+
+            const isOpen =
+                !mobileMenu.classList.contains("hidden");
+
+
+            mobileMenu.classList.toggle(
+                "hidden"
+            );
+
+
+            mobileMenuButton.setAttribute(
+                "aria-expanded",
+                (!isOpen).toString()
+            );
+
+
+            if (!isOpen) {
+
+                mobileMenuIcon.innerHTML = `
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+                `;
+
+            } else {
+
+                mobileMenuIcon.innerHTML = `
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16"
+                    />
+                `;
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Close mobile menu after selecting
+     * a navigation item.
+     */
+
+    mobileMenu
+        .querySelectorAll("a")
+        .forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                function () {
+
+                    mobileMenu.classList.add(
+                        "hidden"
+                    );
+
+                    mobileMenuButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                    mobileMenuIcon.innerHTML = `
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"
+                        />
+                    `;
+
+                }
+            );
+
+        });
+
+});
+
+</script>
+
 
 <!-- Global Illuminati Eye Cursor Tracking -->
 <script>
